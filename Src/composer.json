@@ -1,0 +1,25 @@
+{
+	"name": "w7/rangine-crontab",
+	"description": "rangine crontab",
+	"type": "library",
+	"keywords": [
+		"rangine",
+		"crontab"
+	],
+	"license": "Apache-2.0",
+	"require": {
+		"php": ">=7.1.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"W7\\Crontab\\": "Src/"
+		}
+	},
+	"extra": {
+		"rangine": {
+			"providers": [
+				"W7\\Crontab\\ServiceProvider"
+			]
+		}
+	}
+}
