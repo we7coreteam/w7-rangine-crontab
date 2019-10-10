@@ -17,6 +17,9 @@ use W7\Crontab\Process\DispatcherProcess;
 use W7\Crontab\Process\ExecutorProcess;
 
 class Server extends ProcessServerAbstract {
+	public static $aloneServer = true;
+
+
 	public function __construct() {
 		$crontabConfig = iconfig()->getUserConfig($this->getType());
 		$supportServers = iconfig()->getServer();
