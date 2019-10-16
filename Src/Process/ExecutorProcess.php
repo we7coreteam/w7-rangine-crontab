@@ -26,7 +26,7 @@ class ExecutorProcess extends ProcessAbstract {
 				/**
 				 * @var TaskDispatcher $taskDispatcher
 				 */
-				ilogger()->debug('pop crontab task ' .$data . ' at ' . $this->process->pid);
+				ilogger()->debug('exec crontab task ' .$data . ' at ' . $this->process->pid);
 				$taskDispatcher = iloader()->get(TaskDispatcher::class);
 				try {
 					$result = $taskDispatcher->dispatch($this->process, -1, $this->process->pid, $data);
@@ -35,7 +35,7 @@ class ExecutorProcess extends ProcessAbstract {
 					}
 					ilogger()->debug('complete crontab task ' . $result->task . ' with data ' .$data . ' at ' . $this->process->pid);
 				} catch (\Throwable $e) {
-					ilogger()->debug('exec crontab task ' . $result->task . ' with data ' .$data . ' at ' . $this->process->pid . ' with erro ' . $e->getMessage());
+					ilogger()->debug('exec crontab task fail with task ' .$data . ' at ' . $this->process->pid . ' with error ' . $e->getMessage());
 				}
 			}
 		}
