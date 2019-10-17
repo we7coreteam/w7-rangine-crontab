@@ -13,6 +13,7 @@
 namespace W7\Crontab\Process;
 
 use W7\Core\Dispatcher\TaskDispatcher;
+use W7\Core\Exception\HandlerExceptions;
 use W7\Core\Process\ProcessAbstract;
 
 class ExecutorProcess extends ProcessAbstract {
@@ -34,8 +35,8 @@ class ExecutorProcess extends ProcessAbstract {
 						continue;
 					}
 					ilogger()->debug('complete crontab task ' . $result->task . ' with data ' .$data . ' at ' . $this->process->pid);
-				} catch (\Throwable $e) {
-					ilogger()->debug('exec crontab task fail with task ' .$data . ' at ' . $this->process->pid . ' with error ' . $e->getMessage());
+				} catch (\Throwable $throwable) {
+					iloader()->get(HandlerExceptions::class)->handle($throwable, $this->serverType);
 				}
 			}
 		}
