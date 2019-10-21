@@ -25,7 +25,7 @@ class ExecutorProcess extends ProcessAbstract {
 
 	protected function run(Process $process) {
 		Timer::tick(1000, function () {
-			if ($data = $this->getMsg()) {
+			if ($data = $this->readMsg()) {
 				/**
 				 * @var TaskDispatcher $taskDispatcher
 				 */
