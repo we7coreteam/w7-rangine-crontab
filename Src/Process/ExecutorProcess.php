@@ -12,6 +12,7 @@
 
 namespace W7\Crontab\Process;
 
+use Swoole\Timer;
 use W7\Core\Dispatcher\TaskDispatcher;
 use W7\Core\Exception\HandlerExceptions;
 use W7\Core\Process\ProcessAbstract;
@@ -22,23 +23,23 @@ class ExecutorProcess extends ProcessAbstract {
 	}
 
 	protected function run() {
-		while ($data = $this->getMsg()) {
-			if ($data) {
+		Timer::tick(1000, function () {
+			if ($data = $this->getMsg()) {
 				/**
 				 * @var TaskDispatcher $taskDispatcher
 				 */
-				ilogger()->debug('exec crontab task ' .$data . ' at ' . $this->process->pid);
+				ilogger()->debug('exec crontab task ' . $data . ' at ' . $this->process->pid);
 				$taskDispatcher = iloader()->get(TaskDispatcher::class);
 				try {
 					$result = $taskDispatcher->dispatch($this->process, -1, $this->process->pid, $data);
 					if ($result === false) {
-						continue;
+						return false;
 					}
-					ilogger()->debug('complete crontab task ' . $result->task . ' with data ' .$data . ' at ' . $this->process->pid);
+					ilogger()->debug('complete crontab task ' . $result->task . ' with data ' . $data . ' at ' . $this->process->pid);
 				} catch (\Throwable $throwable) {
 					iloader()->get(HandlerExceptions::class)->handle($throwable, $this->serverType);
 				}
 			}
-		}
+		});
 	}
 }
