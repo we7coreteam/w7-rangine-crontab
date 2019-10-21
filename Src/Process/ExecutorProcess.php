@@ -13,6 +13,7 @@
 namespace W7\Crontab\Process;
 
 use Swoole\Timer;
+use Swoole\Process;
 use W7\Core\Dispatcher\TaskDispatcher;
 use W7\Core\Exception\HandlerExceptions;
 use W7\Core\Process\ProcessAbstract;
@@ -22,7 +23,7 @@ class ExecutorProcess extends ProcessAbstract {
 		return true;
 	}
 
-	protected function run() {
+	protected function run(Process $process) {
 		Timer::tick(1000, function () {
 			if ($data = $this->getMsg()) {
 				/**
