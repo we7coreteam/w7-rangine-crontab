@@ -12,6 +12,8 @@
 
 namespace W7\Crontab\Process;
 
+use Swoole\Timer;
+use Swoole\Process;
 use W7\Core\Process\ProcessAbstract;
 use W7\Crontab\Task\TaskManager;
 
@@ -43,15 +45,18 @@ class DispatcherProcess extends ProcessAbstract {
 		return static::$tasks;
 	}
 
-	protected function run() {
+	protected function run(Process $process) {
 		if ((ENV & DEBUG) === DEBUG) {
 			echo 'Crontab run at ' . date('Y-m-d H:i:s') . PHP_EOL;
 		}
 
-		$tasks = $this->taskManager->getRunTasks();
-		foreach ($tasks as $name => $task) {
-			ilogger()->debug('push crontab task ' . $name . ' ' . $task);
-			$this->sendMsg($task);
-		}
+		Timer::tick(1000, function () {
+			$tasks = $this->taskManager->getRunTasks();
+			foreach ($tasks as $name => $task) {
+				ilogger()->debug('push crontab task ' . $name . ' ' . $task);
+				$this->sendMsg($task);
+			}
+		});
+
 	}
 }
