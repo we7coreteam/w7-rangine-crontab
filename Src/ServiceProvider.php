@@ -14,7 +14,7 @@ class ServiceProvider extends ProviderAbstract{
 	 * @return void
 	 */
 	public function register() {
-		ServerEnum::$ALL_SERVER['crontab'] = Server::class;
+		ServerEnum::registerServer('crontab', Server::class);
 		/**
 		 * @var SwooleEvent $event
 		 */
