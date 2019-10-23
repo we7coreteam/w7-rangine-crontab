@@ -10,6 +10,9 @@
 	"require": {
 		"php": ">=7.1.0"
 	},
+	"require-dev": {
+		"w7/rangine": "dev-master"
+	},
 	"autoload": {
 		"psr-4": {
 			"W7\\Crontab\\": "Src/"
