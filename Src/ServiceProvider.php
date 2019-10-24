@@ -34,7 +34,7 @@ class ServiceProvider extends ProviderAbstract{
 		 */
 		$logManager = iloader()->get(LogManager::class);
 		$logManager->addChannel('crontab', 'stream', [
-			'path' => RUNTIME_PATH . DS. 'logs'. DS. 'crontab.log',
+			'path' => RUNTIME_PATH . '/logs/crontab.log',
 			'level' => ienv('LOG_CHANNEL_CRONTAB_LEVEL', 'debug'),
 		]);
 	}
