@@ -53,7 +53,7 @@ class DispatcherProcess extends ProcessAbstract {
 		Timer::tick(1000, function () {
 			$tasks = $this->taskManager->getRunTasks();
 			foreach ($tasks as $name => $task) {
-				ilogger()->debug('push crontab task ' . $name . ' ' . $task);
+				ilogger()->channel('crontab')->debug('push crontab task ' . $name . ' ' . $task);
 				$this->sendMsg($task);
 			}
 		});

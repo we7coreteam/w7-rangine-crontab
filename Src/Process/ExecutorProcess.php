@@ -29,14 +29,14 @@ class ExecutorProcess extends ProcessAbstract {
 				/**
 				 * @var TaskDispatcher $taskDispatcher
 				 */
-				ilogger()->debug('exec crontab task ' . $data . ' at ' . $this->process->pid);
+				ilogger()->channel('crontab')->debug('exec crontab task ' . $data . ' at ' . $this->process->pid);
 				$taskDispatcher = iloader()->get(TaskDispatcher::class);
 				try {
 					$result = $taskDispatcher->dispatch($this->process, -1, $this->process->pid, $data);
 					if ($result === false) {
 						return false;
 					}
-					ilogger()->debug('complete crontab task ' . $result->task . ' with data ' . $data . ' at ' . $this->process->pid);
+					ilogger()->channel('crontab')->debug('complete crontab task ' . $result->task . ' with data ' . $data . ' at ' . $this->process->pid);
 				} catch (\Throwable $throwable) {
 					iloader()->get(HandlerExceptions::class)->handle($throwable, $this->serverType);
 				}
