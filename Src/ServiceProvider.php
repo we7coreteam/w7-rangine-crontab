@@ -2,6 +2,7 @@
 
 namespace W7\Crontab;
 
+use W7\Core\Log\LogManager;
 use W7\Core\Provider\ProviderAbstract;
 use W7\Core\Server\ServerEnum;
 use W7\Core\Server\SwooleEvent;
@@ -25,13 +26,17 @@ class ServiceProvider extends ProviderAbstract{
 	}
 
 	private function registerLog() {
-		$config = iconfig()->getUserConfig('log');
-		$config['channel']['crontab'] = [
-			'driver' => 'stream',
+		if (!empty($this->config->getUserConfig('log')['channel']['crontab'])) {
+			return false;
+		}
+		/**
+		 * @var LogManager $logManager
+		 */
+		$logManager = iloader()->get(LogManager::class);
+		$logManager->addChannel('crontab', 'stream', [
 			'path' => RUNTIME_PATH . DS. 'logs'. DS. 'crontab.log',
 			'level' => ienv('LOG_CHANNEL_CRONTAB_LEVEL', 'debug'),
-		];
-		iconfig()->setUserConfig('log', $config);
+		]);
 	}
 
 	/**
@@ -40,7 +45,5 @@ class ServiceProvider extends ProviderAbstract{
 	 * @return void
 	 */
 	public function boot() {
-		//需要提前初始化，如果在进程中再初始化，会清空日志
-		ilogger();
 	}
 }
