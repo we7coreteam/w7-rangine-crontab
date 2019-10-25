@@ -74,7 +74,7 @@ class Task{
 
 		if (count($cron) == 6) {
 			$date = array(
-				'second' => (empty($cron[0])) ? array(1 => 1) : $this->parseCronNumber($cron[0], 1, 59),
+				'second' => (empty($cron[0])) ? array(1 => 1) : $this->parseCronNumber($cron[0], 0, 59),
 				'minutes' => $this->parseCronNumber($cron[1], 0, 59),
 				'hours' => $this->parseCronNumber($cron[2], 0, 23),
 				'day' => $this->parseCronNumber($cron[3], 1, 31),
