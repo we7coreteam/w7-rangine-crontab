@@ -16,7 +16,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"W7\\Crontab\\": "Src/"
+			"W7\\Crontab\\": "src/"
 		}
 	},
 	"extra": {
