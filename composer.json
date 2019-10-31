@@ -11,7 +11,8 @@
 		"php": ">=7.1.0"
 	},
 	"require-dev": {
-		"w7/rangine": "dev-master"
+		"w7/rangine": "~2.0",
+		"w7/php-cs-fixer": "^1.0"
 	},
 	"autoload": {
 		"psr-4": {
