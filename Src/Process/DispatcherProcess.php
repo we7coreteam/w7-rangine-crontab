@@ -53,8 +53,14 @@ class DispatcherProcess extends ProcessAbstract {
 		Timer::tick(1000, function () {
 			$tasks = $this->taskManager->getRunTasks();
 			foreach ($tasks as $name => $task) {
-				ilogger()->channel('crontab')->debug('push crontab task ' . $name . ' ' . $task);
-				$this->sendMsg($task);
+				try{
+					if (!$this->sendMsg($task)) {
+						throw new \RuntimeException('');
+					}
+					ilogger()->channel('crontab')->debug('push crontab task ' . $name . ' success with data ' . $task);
+				} catch (\Throwable $e) {
+					ilogger()->channel('crontab')->debug('push crontab task ' . $name . ' fail with data ' . $task . ' with error ' . $e->getMessage());
+				}
 			}
 		});
 
