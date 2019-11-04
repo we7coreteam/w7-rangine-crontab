@@ -17,12 +17,12 @@ class ServiceProvider extends ProviderAbstract{
 	public function register() {
 		$this->registerLog();
 
-		ServerEnum::registerServer('crontab', Server::class);
+		$this->registerServer('crontab', Server::class);
 		/**
 		 * @var SwooleEvent $event
 		 */
 		$event = iloader()->get(SwooleEvent::class);
-		$event->addServerEvents('crontab', $event->getDefaultEvent()[ServerEnum::TYPE_PROCESS]);
+		$this->registerServerEvent('crontab', $event->getDefaultEvent()[ServerEnum::TYPE_PROCESS]);
 	}
 
 	private function registerLog() {
