@@ -26,7 +26,7 @@ class Task{
 	}
 
 	public function getTask() {
-		return $this->config['task'];
+		return $this->config['class'];
 	}
 
 	public function getRule() {
