@@ -16,9 +16,9 @@ class AfterDispatcherListener extends ListenerAbstract {
 
 	private function log(AfterDispatcherEvent $event) {
 		if (!$event->throwable) {
-			ilogger()->channel('crontab')->debug('push crontab task ' . $event->task->getName() . ' success with data ' . $event->task->getTaskInfo());
+			ilogger()->channel('crontab')->debug('push crontab task ' . $event->task->getName() . ' success with data ' . $event->task->getTaskMessage()->pack());
 		} else {
-			ilogger()->channel('crontab')->debug('push crontab task ' . $event->task->getName() . ' fail with data ' . $event->task->getTaskInfo() . ' with error ' . $event->throwable->getMessage());
+			ilogger()->channel('crontab')->debug('push crontab task ' . $event->task->getName() . ' fail with data ' . $event->task->getTaskMessage()->pack() . ' with error ' . $event->throwable->getMessage());
 		}
 	}
 }

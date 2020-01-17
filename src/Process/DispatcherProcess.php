@@ -62,7 +62,7 @@ class DispatcherProcess extends ProcessAbstract {
 			foreach ($tasks as $name => $task) {
 				try{
 					ievent(new BeforeDispatcherEvent($task));
-					if (!$this->sendMsg($task->getTaskInfo())) {
+					if (!$this->sendMsg($task->getTaskMessage()->pack())) {
 						throw new \RuntimeException('dispatch task fail');
 					}
 					ievent(new AfterDispatcherEvent($task));

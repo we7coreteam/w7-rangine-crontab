@@ -33,12 +33,12 @@ class Task{
 		return $this->config['rule'];
 	}
 
-	public function getTaskInfo() {
+	public function getTaskMessage() {
 		$message = new CrontabMessage();
 		$message->task = $this->getTask();
 		$message->params['name'] = $this->getName();
 
-		return $message->pack();
+		return $message;
 	}
 
 	/**
