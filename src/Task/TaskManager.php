@@ -37,7 +37,7 @@ class TaskManager{
 		$tasks = [];
 		foreach ($this->tasks as $task) {
 			if ($task->check($time)) {
-				$tasks[$task->getName()] = $task->getTaskInfo();
+				$tasks[$task->getName()] = $task;
 			}
 		}
 

@@ -17,6 +17,8 @@ use Swoole\Process;
 use W7\Core\Dispatcher\TaskDispatcher;
 use W7\Core\Exception\HandlerExceptions;
 use W7\Core\Process\ProcessAbstract;
+use W7\Crontab\Event\AfterExecutorEvent;
+use W7\Crontab\Event\BeforeExecutorEvent;
 
 class ExecutorProcess extends ProcessAbstract {
 	public function check(){
@@ -29,15 +31,16 @@ class ExecutorProcess extends ProcessAbstract {
 				/**
 				 * @var TaskDispatcher $taskDispatcher
 				 */
-				ilogger()->channel('crontab')->debug('exec crontab task ' . $data . ' at ' . $this->process->pid);
+				ievent(new BeforeExecutorEvent($data));
 				$taskDispatcher = iloader()->get(TaskDispatcher::class);
 				try {
 					$result = $taskDispatcher->dispatch($this->process, -1, $this->process->pid, $data);
 					if ($result === false) {
 						return false;
 					}
-					ilogger()->channel('crontab')->debug('complete crontab task ' . $result->task . ' with data ' . $data . ' at ' . $this->process->pid);
+					ievent(new AfterExecutorEvent($data));
 				} catch (\Throwable $throwable) {
+					ievent(new AfterExecutorEvent($data, $throwable));
 					iloader()->get(HandlerExceptions::class)->handle($throwable, $this->serverType);
 				}
 			}

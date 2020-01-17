@@ -14,7 +14,11 @@ namespace W7\Crontab\Process;
 
 use Swoole\Timer;
 use Swoole\Process;
+use W7\Core\Exception\HandlerExceptions;
 use W7\Core\Process\ProcessAbstract;
+use W7\Crontab\Event\AfterDispatcherEvent;
+use W7\Crontab\Event\BeforeDispatcherEvent;
+use W7\Crontab\Task\Task;
 use W7\Crontab\Task\TaskManager;
 
 class DispatcherProcess extends ProcessAbstract {
@@ -52,14 +56,19 @@ class DispatcherProcess extends ProcessAbstract {
 
 		Timer::tick(1000, function () {
 			$tasks = $this->taskManager->getRunTasks();
+			/**
+			 * @var Task $task
+			 */
 			foreach ($tasks as $name => $task) {
 				try{
-					if (!$this->sendMsg($task)) {
-						throw new \RuntimeException('');
+					ievent(new BeforeDispatcherEvent($task));
+					if (!$this->sendMsg($task->getTaskInfo())) {
+						throw new \RuntimeException('dispatch task fail, task: ' . $task);
 					}
-					ilogger()->channel('crontab')->debug('push crontab task ' . $name . ' success with data ' . $task);
+					ievent(new AfterDispatcherEvent($task));
 				} catch (\Throwable $e) {
-					ilogger()->channel('crontab')->debug('push crontab task ' . $name . ' fail with data ' . $task . ' with error ' . $e->getMessage());
+					ievent(new AfterDispatcherEvent($task, $e));
+					iloader()->get(HandlerExceptions::class)->handle($e, $this->serverType);
 				}
 			}
 		});
