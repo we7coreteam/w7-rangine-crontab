@@ -32,8 +32,6 @@ class ServiceProvider extends ProviderAbstract {
 	 * @return void
 	 */
 	public function register() {
-		$this->registerLog();
-
 		$this->registerServer('crontab', Server::class);
 		/**
 		 * @var SwooleEvent $event
@@ -41,6 +39,10 @@ class ServiceProvider extends ProviderAbstract {
 		$event = iloader()->get(SwooleEvent::class);
 		$this->registerServerEvent('crontab', $event->getDefaultEvent()[ServerEnum::TYPE_PROCESS]);
 
+		if ((ENV & DEBUG) != DEBUG) {
+			return false;
+		}
+		$this->registerLog();
 		$this->registerEventListener();
 	}
 
@@ -59,9 +61,6 @@ class ServiceProvider extends ProviderAbstract {
 	}
 
 	private function registerEventListener() {
-		if ((ENV & DEBUG) != DEBUG) {
-			return false;
-		}
 		/**
 		 * @var EventDispatcher $eventDispatcher
 		 */
