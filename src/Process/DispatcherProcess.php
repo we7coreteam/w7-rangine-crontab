@@ -12,7 +12,6 @@
 
 namespace W7\Crontab\Process;
 
-use Swoole\Timer;
 use Swoole\Process;
 use W7\Core\Exception\HandlerExceptions;
 use W7\Core\Process\ProcessAbstract;
@@ -54,7 +53,7 @@ class DispatcherProcess extends ProcessAbstract {
 			ioutputer()->info('Crontab run at ' . date('Y-m-d H:i:s'));
 		}
 
-		Timer::tick(1000, function () {
+		itimeTick(1000, function () {
 			$tasks = $this->taskManager->getRunTasks();
 			/**
 			 * @var Task $task

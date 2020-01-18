@@ -1,18 +1,17 @@
 <?php
 
 /**
- * This file is part of Rangine
+ * Rangine crontab server
  *
  * (c) We7Team 2019 <https://www.rangine.com>
  *
  * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
  *
- * visited https://www.rangine.com/ for more details
+ * visited https://www.rangine.com for more details
  */
 
 namespace W7\Crontab\Process;
 
-use Swoole\Timer;
 use Swoole\Process;
 use W7\Core\Dispatcher\TaskDispatcher;
 use W7\Core\Exception\HandlerExceptions;
@@ -21,12 +20,12 @@ use W7\Crontab\Event\AfterExecutorEvent;
 use W7\Crontab\Event\BeforeExecutorEvent;
 
 class ExecutorProcess extends ProcessAbstract {
-	public function check(){
+	public function check() {
 		return true;
 	}
 
 	protected function run(Process $process) {
-		Timer::tick(1000, function () {
+		itimeTick(1000, function () {
 			if ($data = $this->readMsg()) {
 				/**
 				 * @var TaskDispatcher $taskDispatcher
