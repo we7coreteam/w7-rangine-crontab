@@ -1,13 +1,13 @@
 <?php
 
 /**
- * This file is part of Rangine
+ * Rangine crontab server
  *
  * (c) We7Team 2019 <https://www.rangine.com>
  *
  * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
  *
- * visited https://www.rangine.com/ for more details
+ * visited https://www.rangine.com for more details
  */
 
 namespace W7\Crontab\Process;
@@ -32,7 +32,7 @@ class DispatcherProcess extends ProcessAbstract {
 		$this->taskManager = new TaskManager(static::getTasks());
 	}
 
-	public function check(){
+	public function check() {
 		return true;
 	}
 
@@ -51,7 +51,7 @@ class DispatcherProcess extends ProcessAbstract {
 
 	protected function run(Process $process) {
 		if ((ENV & DEBUG) === DEBUG) {
-			echo 'Crontab run at ' . date('Y-m-d H:i:s') . PHP_EOL;
+			ioutputer()->info('Crontab run at ' . date('Y-m-d H:i:s'));
 		}
 
 		Timer::tick(1000, function () {
@@ -60,7 +60,7 @@ class DispatcherProcess extends ProcessAbstract {
 			 * @var Task $task
 			 */
 			foreach ($tasks as $name => $task) {
-				try{
+				try {
 					ievent(new BeforeDispatcherEvent($task));
 					if (!$this->sendMsg($task->getTaskMessage()->pack())) {
 						throw new \RuntimeException('dispatch task fail');
@@ -72,6 +72,5 @@ class DispatcherProcess extends ProcessAbstract {
 				}
 			}
 		});
-
 	}
 }
