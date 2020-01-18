@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Rangine crontab server
+ *
+ * (c) We7Team 2019 <https://www.rangine.com>
+ *
+ * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
+ *
+ * visited https://www.rangine.com for more details
+ */
+
 namespace W7\Crontab;
 
 use W7\Core\Dispatcher\EventDispatcher;
@@ -15,7 +25,7 @@ use W7\Crontab\Listener\AfterExecutorListener;
 use W7\Crontab\Listener\BeforeExecutorListener;
 use W7\Crontab\Server\Server;
 
-class ServiceProvider extends ProviderAbstract{
+class ServiceProvider extends ProviderAbstract {
 	/**
 	 * Register any application services.
 	 *
@@ -49,6 +59,9 @@ class ServiceProvider extends ProviderAbstract{
 	}
 
 	private function registerEventListener() {
+		if ((ENV & DEBUG) != DEBUG) {
+			return false;
+		}
 		/**
 		 * @var EventDispatcher $eventDispatcher
 		 */
