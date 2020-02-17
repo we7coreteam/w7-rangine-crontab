@@ -34,6 +34,15 @@ class Server extends ProcessServerAbstract {
 
 	protected function checkSetting() {
 		parent::checkSetting();
+		$tasks = \iconfig()->getUserConfig('crontab')['task'] ?? [];
+		foreach ($tasks as $name => $task) {
+			if (empty($task['class'])) {
+				throw new \RuntimeException('task ' . $name . ' config error : class');
+			}
+			if (empty($task['rule'])) {
+				throw new \RuntimeException('task ' . $name . ' config error : rule');
+			}
+		}
 
 		$this->setting['ipc_type'] = SWOOLE_IPC_MSGQUEUE;
 		$this->setting['message_queue_key'] =(int)($this->setting['message_queue_key'] ?? 0);
