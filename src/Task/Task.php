@@ -6,11 +6,7 @@ use Exception;
 use InvalidArgumentException;
 use W7\Crontab\Message\CrontabMessage;
 
-class Task{
-	const PREPARE = 1;
-	CONST RUNING = 2;
-	const COMPLETE = 3;
-
+class Task {
 	private $name;
 	private $config;
 	private $date;
