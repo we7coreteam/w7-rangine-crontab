@@ -15,7 +15,7 @@ namespace W7\Crontab;
 use W7\Core\Log\LogManager;
 use W7\Core\Provider\ProviderAbstract;
 use W7\Core\Server\ServerEnum;
-use W7\Core\Server\SwooleEvent;
+use W7\Core\Server\ServerEvent;
 use W7\Crontab\Server\Server;
 
 class ServiceProvider extends ProviderAbstract {
@@ -27,9 +27,9 @@ class ServiceProvider extends ProviderAbstract {
 	public function register() {
 		$this->registerServer('crontab', Server::class);
 		/**
-		 * @var SwooleEvent $event
+		 * @var ServerEvent $event
 		 */
-		$event = iloader()->get(SwooleEvent::class);
+		$event = iloader()->get(ServerEvent::class);
 		$this->registerServerEvent('crontab', $event->getDefaultEvent()[ServerEnum::TYPE_PROCESS]);
 
 		if ((ENV & DEBUG) != DEBUG) {
