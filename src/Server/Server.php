@@ -1,13 +1,13 @@
 <?php
 
 /**
- * This file is part of Rangine
+ * Rangine crontab server
  *
- * (c) We7Team 2019 <https://www.rangine.com/>
+ * (c) We7Team 2019 <https://www.rangine.com>
  *
  * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
  *
- * visited https://www.rangine.com/ for more details
+ * visited https://www.rangine.com for more details
  */
 
 namespace W7\Crontab\Server;
@@ -37,10 +37,10 @@ class Server extends ProcessServerAbstract {
 		$tasks = \iconfig()->getUserConfig('crontab')['task'] ?? [];
 		foreach ($tasks as $name => $task) {
 			if (empty($task['class'])) {
-				throw new \RuntimeException('task ' . $name . ' config error : class');
+				throw new \RuntimeException('task ' . $name . ' config error : class, please check the configuration in config/crontab.php');
 			}
 			if (empty($task['rule'])) {
-				throw new \RuntimeException('task ' . $name . ' config error : rule');
+				throw new \RuntimeException('task ' . $name . ' config error : rule, please check the configuration in config/crontab.php');
 			}
 		}
 

@@ -62,7 +62,7 @@ class DispatcherProcess extends ProcessAbstract {
 				try {
 					ievent(new BeforeDispatcherEvent($task));
 					if (!$this->sendMsg($task->getTaskMessage()->pack())) {
-						throw new \RuntimeException('dispatch task fail');
+						throw new \RuntimeException('dispatch task fail, task: ' . $task->getTaskMessage()->pack());
 					}
 					ievent(new AfterDispatcherEvent($task));
 				} catch (\Throwable $e) {
