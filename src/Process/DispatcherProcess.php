@@ -67,7 +67,7 @@ class DispatcherProcess extends ProcessAbstract {
 					ievent(new AfterDispatcherEvent($task));
 				} catch (\Throwable $e) {
 					ievent(new AfterDispatcherEvent($task, $e));
-					iloader()->get(HandlerExceptions::class)->handle($e, $this->serverType);
+					icontainer()->singleton(HandlerExceptions::class)->handle($e, $this->serverType);
 				}
 			}
 		});

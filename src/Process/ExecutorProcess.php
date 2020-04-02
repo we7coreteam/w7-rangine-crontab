@@ -31,7 +31,7 @@ class ExecutorProcess extends ProcessAbstract {
 				 * @var TaskDispatcher $taskDispatcher
 				 */
 				ievent(new BeforeExecutorEvent($data));
-				$taskDispatcher = iloader()->get(TaskDispatcher::class);
+				$taskDispatcher = icontainer()->singleton(TaskDispatcher::class);
 				try {
 					$result = $taskDispatcher->dispatch($this->process, -1, $this->process->pid, $data);
 					if ($result === false) {
@@ -40,7 +40,7 @@ class ExecutorProcess extends ProcessAbstract {
 					ievent(new AfterExecutorEvent($data));
 				} catch (\Throwable $throwable) {
 					ievent(new AfterExecutorEvent($data, $throwable));
-					iloader()->get(HandlerExceptions::class)->handle($throwable, $this->serverType);
+					icontainer()->singleton(HandlerExceptions::class)->handle($throwable, $this->serverType);
 				}
 			}
 		});

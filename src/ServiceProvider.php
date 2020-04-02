@@ -37,7 +37,7 @@ class ServiceProvider extends ProviderAbstract {
 		/**
 		 * @var ServerEvent $event
 		 */
-		$event = iloader()->get(ServerEvent::class);
+		$event = icontainer()->singleton(ServerEvent::class);
 		$this->registerServerEvent('crontab', $event->getDefaultEvent()[ServerEnum::TYPE_PROCESS]);
 
 		if ((ENV & DEBUG) != DEBUG) {
@@ -54,10 +54,10 @@ class ServiceProvider extends ProviderAbstract {
 		/**
 		 * @var LogManager $logManager
 		 */
-		$logManager = iloader()->get(LogManager::class);
+		$logManager = icontainer()->singleton(LogManager::class);
 		$logManager->addChannel('crontab', 'stream', [
 			'path' => RUNTIME_PATH . '/logs/crontab.log',
-			'level' => ((ENV & DEBUG) === DEBUG) ? 'debug' : 'info'
+			'level' => 'debug'
 		]);
 	}
 
