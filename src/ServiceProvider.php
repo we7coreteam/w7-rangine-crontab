@@ -16,6 +16,14 @@ use W7\Core\Log\LogManager;
 use W7\Core\Provider\ProviderAbstract;
 use W7\Core\Server\ServerEnum;
 use W7\Core\Server\ServerEvent;
+use W7\Crontab\Event\AfterDispatcherEvent;
+use W7\Crontab\Event\AfterExecutorEvent;
+use W7\Crontab\Event\BeforeDispatcherEvent;
+use W7\Crontab\Event\BeforeExecutorEvent;
+use W7\Crontab\Listener\AfterDispatcherListener;
+use W7\Crontab\Listener\AfterExecutorListener;
+use W7\Crontab\Listener\BeforeDispatcherListener;
+use W7\Crontab\Listener\BeforeExecutorListener;
 use W7\Crontab\Server\Server;
 
 class ServiceProvider extends ProviderAbstract {
@@ -36,7 +44,7 @@ class ServiceProvider extends ProviderAbstract {
 			return false;
 		}
 		$this->registerLog();
-		$this->registerEvent();
+		$this->registerEvents();
 	}
 
 	private function registerLog() {
@@ -51,6 +59,13 @@ class ServiceProvider extends ProviderAbstract {
 			'path' => RUNTIME_PATH . '/logs/crontab.log',
 			'level' => ((ENV & DEBUG) === DEBUG) ? 'debug' : 'info'
 		]);
+	}
+
+	private function registerEvents() {
+		$this->registerEvent(BeforeExecutorEvent::class, BeforeExecutorListener::class);
+		$this->registerEvent(BeforeDispatcherEvent::class, BeforeDispatcherListener::class);
+		$this->registerEvent(AfterExecutorEvent::class, AfterExecutorListener::class);
+		$this->registerEvent(AfterDispatcherEvent::class, AfterDispatcherListener::class);
 	}
 
 	/**
