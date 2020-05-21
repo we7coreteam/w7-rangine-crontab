@@ -34,7 +34,7 @@ class Server extends ProcessServerAbstract {
 
 	protected function checkSetting() {
 		parent::checkSetting();
-		$tasks = \iconfig()->getUserConfig('crontab')['task'] ?? [];
+		$tasks = \iconfig()->get('crontab.task', []);
 		foreach ($tasks as $name => $task) {
 			if (empty($task['class'])) {
 				throw new \RuntimeException('task ' . $name . ' config error : class, please check the configuration in config/crontab.php');
