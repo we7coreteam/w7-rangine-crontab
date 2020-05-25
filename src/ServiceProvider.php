@@ -37,7 +37,7 @@ class ServiceProvider extends ProviderAbstract {
 		/**
 		 * @var ServerEvent $event
 		 */
-		$event = $this->getContainer()->singleton(ServerEvent::class);
+		$event = $this->container->singleton(ServerEvent::class);
 		$this->registerServerEvent('crontab', $event->getDefaultEvent()[ServerEnum::TYPE_PROCESS]);
 
 		if ((ENV & DEBUG) != DEBUG) {
@@ -48,13 +48,13 @@ class ServiceProvider extends ProviderAbstract {
 	}
 
 	private function registerLog() {
-		if (!empty($this->getConfigger()->get('log.channel.crontab'))) {
+		if (!empty($this->config->get('log.channel.crontab'))) {
 			return false;
 		}
 		/**
 		 * @var LogManager $logManager
 		 */
-		$logManager = $this->getContainer()->singleton(LogManager::class);
+		$logManager = $this->config->singleton(LogManager::class);
 		$logManager->addChannel('crontab', 'stream', [
 			'path' => RUNTIME_PATH . '/logs/crontab.log',
 			'level' => 'debug'
