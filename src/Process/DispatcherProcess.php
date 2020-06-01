@@ -65,9 +65,9 @@ class DispatcherProcess extends ProcessAbstract {
 						throw new \RuntimeException('dispatch task fail, task: ' . $task->getTaskMessage()->pack());
 					}
 					ievent(new AfterDispatcherEvent($task));
-				} catch (\Throwable $e) {
-					ievent(new AfterDispatcherEvent($task, $e));
-					icontainer()->singleton(HandlerExceptions::class)->handle($e, $this->serverType);
+				} catch (\Throwable $throwable) {
+					ievent(new AfterDispatcherEvent($task, $throwable));
+					icontainer()->singleton(HandlerExceptions::class)->getHandler()->report($throwable);
 				}
 			}
 		});

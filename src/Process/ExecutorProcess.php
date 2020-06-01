@@ -40,7 +40,7 @@ class ExecutorProcess extends ProcessAbstract {
 					ievent(new AfterExecutorEvent($data));
 				} catch (\Throwable $throwable) {
 					ievent(new AfterExecutorEvent($data, $throwable));
-					icontainer()->singleton(HandlerExceptions::class)->handle($throwable, $this->serverType);
+					icontainer()->singleton(HandlerExceptions::class)->getHandler()->report($throwable);
 				}
 			}
 		});
