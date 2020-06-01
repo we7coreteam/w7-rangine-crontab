@@ -55,7 +55,7 @@ class ServiceProvider extends ProviderAbstract {
 		/**
 		 * @var LogManager $logManager
 		 */
-		$logManager = $this->config->singleton(LogManager::class);
+		$logManager = $this->container->singleton(LogManager::class);
 		$logManager->addChannel('crontab', 'stream', [
 			'path' => RUNTIME_PATH . '/logs/crontab.log',
 			'level' => 'debug'
