@@ -78,6 +78,6 @@ class ServiceProvider extends ProviderAbstract {
 	}
 
 	public function providers(): array {
-		return [Application::class, Server::class];
+		return [Application::class];
 	}
 }
