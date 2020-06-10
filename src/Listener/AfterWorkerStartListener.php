@@ -13,6 +13,7 @@
 namespace W7\Crontab\Listener;
 
 use Swoole\Server as SwooleServer;
+use W7\App;
 use W7\Core\Exception\HandlerExceptions;
 use W7\Core\Listener\ListenerAbstract;
 use W7\Crontab\Event\AfterDispatcherEvent;
@@ -33,6 +34,8 @@ class AfterWorkerStartListener extends ListenerAbstract {
 
 		//如果当前进程是当前server的0号进程，执行派发任务
 		if ($workerId == Server::getDispatcherWorkerId()) {
+			\isetProcessTitle(App::$server->getPname(). App::$server->getType()  . ' dispatcher process');
+
 			if ((ENV & DEBUG) === DEBUG) {
 				ioutputer()->info('Crontab run at ' . date('Y-m-d H:i:s'));
 			}
