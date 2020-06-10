@@ -30,6 +30,11 @@ class WorkerStrategy extends StrategyAbstract {
 		return $server->sendMessage($crontabMessage->pack(), $this->getNextWorkerId($server));
 	}
 
+	/**
+	 * 获取当前任务的派发进程号，如果大于服务进程号，转发到第一个进程
+	 * @param Server $server
+	 * @return int
+	 */
 	protected function getNextWorkerId(Server $server): int {
 		++$this->currentWorkerId;
 		$maxWorkerId = $server->setting['worker_num'] - 1;

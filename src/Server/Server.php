@@ -41,6 +41,7 @@ class Server extends TcpServer {
 			}
 		}
 
+		//派发任务的进程加用户配置的执行任务进程数量
 		$this->setting['worker_num'] += 1;
 		self::$dispatcherWorkerId = 0;
 	}

@@ -31,6 +31,7 @@ class AfterWorkerStartListener extends ListenerAbstract {
 		$server = $params[0];
 		$workerId = $params[1];
 
+		//如果当前进程是当前server的0号进程，执行派发任务
 		if ($workerId == Server::getDispatcherWorkerId()) {
 			if ((ENV & DEBUG) === DEBUG) {
 				ioutputer()->info('Crontab run at ' . date('Y-m-d H:i:s'));
@@ -71,6 +72,10 @@ class AfterWorkerStartListener extends ListenerAbstract {
 		return $enableTasks;
 	}
 
+	/**
+	 * 任务派发方式，可自定义
+	 * @return StrategyAbstract
+	 */
 	public function getStrategy() : StrategyAbstract {
 		$strategy = iconfig()->get('crontab.setting.strategy', WorkerStrategy::class);
 		$strategy = icontainer()->singleton($strategy, [Server::getDispatcherWorkerId()]);

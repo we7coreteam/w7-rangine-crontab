@@ -34,6 +34,7 @@ class AfterPipeMessageListener extends ListenerAbstract {
 		$message = $params[2];
 		$data = $params[3];
 
+		//这里判断是不是crontab类型的message
 		if ($message->messageType == CrontabMessage::CRONTAB_MESSAGE) {
 			$context = App::getApp()->getContext();
 			$context->setContextDataByKey('workid', $server->worker_id);
