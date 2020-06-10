@@ -15,7 +15,6 @@ namespace W7\Crontab;
 use W7\Console\Application;
 use W7\Core\Log\LogManager;
 use W7\Core\Provider\ProviderAbstract;
-use W7\Core\Server\ServerEnum;
 use W7\Core\Server\ServerEvent;
 use W7\Crontab\Event\AfterDispatcherEvent;
 use W7\Crontab\Event\AfterExecutorEvent;
@@ -25,6 +24,9 @@ use W7\Crontab\Listener\AfterDispatcherListener;
 use W7\Crontab\Listener\AfterExecutorListener;
 use W7\Crontab\Listener\BeforeDispatcherListener;
 use W7\Crontab\Listener\BeforeExecutorListener;
+use W7\Crontab\Listener\CloseListener;
+use W7\Crontab\Listener\ConnectListener;
+use W7\Crontab\Listener\ReceiveListener;
 use W7\Crontab\Server\Server;
 
 class ServiceProvider extends ProviderAbstract {
@@ -35,11 +37,11 @@ class ServiceProvider extends ProviderAbstract {
 	 */
 	public function register() {
 		$this->registerServer('crontab', Server::class);
-		/**
-		 * @var ServerEvent $event
-		 */
-		$event = $this->container->singleton(ServerEvent::class);
-		$this->registerServerEvent('crontab', $event->getDefaultEvent()[ServerEnum::TYPE_PROCESS]);
+		$this->registerServerEvent('crontab', [
+			ServerEvent::ON_RECEIVE => ReceiveListener::class,
+			ServerEvent::ON_CONNECT => ConnectListener::class,
+			ServerEvent::ON_CLOSE => CloseListener::class
+		]);
 
 		if ((ENV & DEBUG) != DEBUG) {
 			return false;

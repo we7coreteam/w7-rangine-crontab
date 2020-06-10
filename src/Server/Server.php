@@ -12,19 +12,15 @@
 
 namespace W7\Crontab\Server;
 
-use W7\Core\Process\ProcessServerAbstract;
-use W7\Crontab\Process\DispatcherProcess;
-use W7\Crontab\Process\ExecutorProcess;
+use W7\App;
+use W7\Tcp\Server\Server as TcpServer;
 
-class Server extends ProcessServerAbstract {
+class Server extends TcpServer {
+	private static $dispatcherWorkerId;
 	public static $aloneServer = true;
 
 	public function __construct() {
-		$crontabConfig = iconfig()->getUserConfig($this->getType());
-		$supportServers = iconfig()->getServer();
-		$supportServers[$this->getType()] = $crontabConfig['setting'] ?? [];
-		iconfig()->setUserConfig('server', $supportServers);
-
+		iconfig()->set('server.' . $this->getType(), iconfig()->get($this->getType() . '.setting'));
 		parent::__construct();
 	}
 
@@ -34,6 +30,7 @@ class Server extends ProcessServerAbstract {
 
 	protected function checkSetting() {
 		parent::checkSetting();
+
 		$tasks = \iconfig()->get('crontab.task', []);
 		foreach ($tasks as $name => $task) {
 			if (empty($task['class'])) {
@@ -44,13 +41,30 @@ class Server extends ProcessServerAbstract {
 			}
 		}
 
-		$this->setting['ipc_type'] = SWOOLE_IPC_MSGQUEUE;
-		$this->setting['message_queue_key'] =(int)($this->setting['message_queue_key'] ?? 0);
-		$this->setting['message_queue_key'] = $this->setting['message_queue_key'] > 0 ? $this->setting['message_queue_key'] : irandom(6, true);
+		$this->setting['worker_num'] += 1;
+		self::$dispatcherWorkerId = 0;
 	}
 
-	protected function register() {
-		$this->pool->registerProcess('crontab_dispatch', DispatcherProcess::class, 1);
-		$this->pool->registerProcess('crontab_executor', ExecutorProcess::class, $this->setting['worker_num']);
+	public function listener(\Swoole\Server $server) {
+		if ($server->port != $this->setting['port']) {
+			$this->server = $server->addListener($this->setting['host'], $this->setting['port'], $this->setting['sock_type']);
+			//tcp需要强制关闭其它协议支持，否则继续父服务
+			$this->server->set([
+				'open_http2_protocol' => false,
+				'open_http_protocol' => false,
+				'open_websocket_protocol' => false,
+			]);
+		} else {
+			$this->server = $server;
+		}
+
+		self::$dispatcherWorkerId = App::$server->setting['worker_num'];
+		App::$server->setting['worker_num'] += $this->setting['worker_num'];
+
+		$this->registerService();
+	}
+
+	public static function getDispatcherWorkerId() {
+		return self::$dispatcherWorkerId;
 	}
 }
