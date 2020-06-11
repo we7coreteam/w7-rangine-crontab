@@ -22,7 +22,10 @@ class Server extends TcpServer {
 	public static $aloneServer = true;
 
 	public function __construct() {
-		iconfig()->set('server.' . $this->getType(), iconfig()->get($this->getType() . '.setting'));
+		if (!$setting = iconfig()->get($this->getType() . '.setting')) {
+			throw new \RuntimeException(sprintf('缺少服务配置 %s,请在config/crontab.php中添加setting配置项', $this->getType()));
+		}
+		iconfig()->set('server.' . $this->getType(), $setting);
 		parent::__construct();
 	}
 
