@@ -18,7 +18,6 @@ use W7\Tcp\Server\Server as TcpServer;
 class Server extends TcpServer {
 	private static $dispatcherWorkerId;
 
-	public static $masterServer = false;
 	public static $aloneServer = true;
 
 	public function __construct() {
