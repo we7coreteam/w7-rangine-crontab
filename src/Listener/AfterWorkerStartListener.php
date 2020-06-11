@@ -34,7 +34,7 @@ class AfterWorkerStartListener extends ListenerAbstract {
 
 		//如果当前进程是当前server的0号进程，执行派发任务
 		if ($workerId == Server::getDispatcherWorkerId()) {
-			\isetProcessTitle(App::$server->getPname(). App::$server->getType()  . ' dispatcher process');
+			\isetProcessTitle(App::$server->getPname() . 'crontab dispatcher process');
 
 			if ((ENV & DEBUG) === DEBUG) {
 				ioutputer()->info('Crontab run at ' . date('Y-m-d H:i:s'));
