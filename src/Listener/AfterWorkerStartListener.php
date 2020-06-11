@@ -83,6 +83,6 @@ class AfterWorkerStartListener extends ListenerAbstract {
 		$strategy = iconfig()->get('crontab.setting.strategy', WorkerStrategy::class);
 		$strategy = icontainer()->singleton($strategy, [Server::getDispatcherWorkerId()]);
 
-		return$strategy;
+		return $strategy;
 	}
 }
