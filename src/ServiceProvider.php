@@ -13,7 +13,6 @@
 namespace W7\Crontab;
 
 use W7\Console\Application;
-use W7\Core\Log\LogManager;
 use W7\Core\Provider\ProviderAbstract;
 use W7\Core\Server\ServerEvent;
 use W7\Crontab\Event\AfterDispatcherEvent;
@@ -54,11 +53,9 @@ class ServiceProvider extends ProviderAbstract {
 		if (!empty($this->config->get('log.channel.crontab'))) {
 			return false;
 		}
-		/**
-		 * @var LogManager $logManager
-		 */
-		$logManager = $this->container->singleton(LogManager::class);
-		$logManager->addChannel('crontab', 'stream', [
+
+		$this->config->set('log.channel.crontab', [
+			'driver' => 'stream',
 			'path' => RUNTIME_PATH . '/logs/crontab.log',
 			'level' => 'debug'
 		]);
