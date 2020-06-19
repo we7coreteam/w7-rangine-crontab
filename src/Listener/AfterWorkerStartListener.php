@@ -15,6 +15,7 @@ namespace W7\Crontab\Listener;
 use Swoole\Server as SwooleServer;
 use W7\App;
 use W7\Core\Exception\HandlerExceptions;
+use W7\Core\Facades\Output;
 use W7\Core\Listener\ListenerAbstract;
 use W7\Crontab\Event\AfterDispatcherEvent;
 use W7\Crontab\Event\BeforeDispatcherEvent;
@@ -37,7 +38,7 @@ class AfterWorkerStartListener extends ListenerAbstract {
 			\isetProcessTitle(App::$server->getPname() . 'crontab dispatcher process');
 
 			if ((ENV & DEBUG) === DEBUG) {
-				ioutputer()->info('Crontab run at ' . date('Y-m-d H:i:s'));
+				Output::info('Crontab run at ' . date('Y-m-d H:i:s'));
 			}
 
 			$taskManager = new TaskManager($this->getEnableTasks());
