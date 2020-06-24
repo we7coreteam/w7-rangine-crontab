@@ -17,6 +17,8 @@ use Swoole\Server;
 use W7\App;
 use W7\Core\Dispatcher\TaskDispatcher;
 use W7\Core\Exception\HandlerExceptions;
+use W7\Core\Facades\Container;
+use W7\Core\Facades\Event;
 use W7\Core\Listener\ListenerAbstract;
 use W7\Crontab\Event\AfterExecutorEvent;
 use W7\Crontab\Event\BeforeExecutorEvent;
@@ -42,17 +44,17 @@ class AfterPipeMessageListener extends ListenerAbstract {
 			/**
 			 * @var TaskDispatcher $taskDispatcher
 			 */
-			ievent(new BeforeExecutorEvent($data));
-			$taskDispatcher = icontainer()->singleton(TaskDispatcher::class);
+			Event::dispatch(new BeforeExecutorEvent($data));
+			$taskDispatcher = Container::singleton(TaskDispatcher::class);
 			try {
 				$result = $taskDispatcher->dispatch($server, -1, $params[1], $data);
 				if ($result === false) {
 					return false;
 				}
-				ievent(new AfterExecutorEvent($data));
+				Event::dispatch(new AfterExecutorEvent($data));
 			} catch (\Throwable $throwable) {
-				ievent(new AfterExecutorEvent($data, $throwable));
-				icontainer()->singleton(HandlerExceptions::class)->getHandler()->report($throwable);
+				Event::dispatch(new AfterExecutorEvent($data, $throwable));
+				Container::singleton(HandlerExceptions::class)->getHandler()->report($throwable);
 			}
 		}
 	}

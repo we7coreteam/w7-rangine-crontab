@@ -15,6 +15,9 @@ namespace W7\Crontab\Listener;
 use Swoole\Server as SwooleServer;
 use W7\App;
 use W7\Core\Exception\HandlerExceptions;
+use W7\Core\Facades\Config;
+use W7\Core\Facades\Container;
+use W7\Core\Facades\Event;
 use W7\Core\Facades\Output;
 use W7\Core\Listener\ListenerAbstract;
 use W7\Crontab\Event\AfterDispatcherEvent;
@@ -50,14 +53,14 @@ class AfterWorkerStartListener extends ListenerAbstract {
 				 */
 				foreach ($tasks as $name => $task) {
 					try {
-						ievent(new BeforeDispatcherEvent($task));
+						Event::dispatch(new BeforeDispatcherEvent($task));
 						if (!$this->getStrategy()->dispatch($server, $task->getTaskMessage())) {
 							throw new \RuntimeException('dispatch task fail, task: ' . $task->getTaskMessage()->pack());
 						}
-						ievent(new AfterDispatcherEvent($task));
+						Event::dispatch(new AfterDispatcherEvent($task));
 					} catch (\Throwable $throwable) {
-						ievent(new AfterDispatcherEvent($task, $throwable));
-						icontainer()->singleton(HandlerExceptions::class)->getHandler()->report($throwable);
+						Event::dispatch(new AfterDispatcherEvent($task, $throwable));
+						Container::singleton(HandlerExceptions::class)->getHandler()->report($throwable);
 					}
 				}
 			});
@@ -66,7 +69,7 @@ class AfterWorkerStartListener extends ListenerAbstract {
 
 	public function getEnableTasks() {
 		$enableTasks = [];
-		$tasks = \iconfig()->get('crontab.task', []);
+		$tasks = Config::get('crontab.task', []);
 		foreach ($tasks as $name => $task) {
 			if (isset($task['enable']) && $task['enable'] === false) {
 				continue;
@@ -81,8 +84,8 @@ class AfterWorkerStartListener extends ListenerAbstract {
 	 * @return StrategyAbstract
 	 */
 	public function getStrategy() : StrategyAbstract {
-		$strategy = iconfig()->get('crontab.setting.strategy', WorkerStrategy::class);
-		$strategy = icontainer()->singleton($strategy, [Server::getDispatcherWorkerId()]);
+		$strategy = Config::get('crontab.setting.strategy', WorkerStrategy::class);
+		$strategy = Container::singleton($strategy, [Server::getDispatcherWorkerId()]);
 
 		return $strategy;
 	}
