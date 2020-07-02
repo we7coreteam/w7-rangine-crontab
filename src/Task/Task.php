@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Rangine crontab server
+ *
+ * (c) We7Team 2019 <https://www.rangine.com>
+ *
+ * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
+ *
+ * visited https://www.rangine.com for more details
+ */
+
 namespace W7\Crontab\Task;
 
 use Exception;
@@ -33,37 +43,42 @@ class Task {
 		$message = new CrontabMessage();
 		$message->task = $this->getTask();
 		$message->params['name'] = $this->getName();
+		$message->params['config'] = $this->config;
 
 		return $message;
 	}
 
 	/**
-     *  解析crontab的定时格式，linux只支持到分钟/，这个类支持到秒
-     * @param string $crontab_string :
-     *
-     *      0     1    2    3    4    5
-     *      *     *    *    *    *    *
-     *      -     -    -    -    -    -
-     *      |     |    |    |    |    |
-     *      |     |    |    |    |    +----- day of week (0 - 6) (Sunday=0)
-     *      |     |    |    |    +----- month (1 - 12)
-     *      |     |    |    +------- day of month (1 - 31)
-     *      |     |    +--------- hour (0 - 23)
-     *      |     +----------- min (0 - 59)
-     *      +------------- sec (0-59)
-     * @param int $start_time timestamp [default=current timestamp]
-     * @return int unix timestamp - 下一分钟内执行是否需要执行任务，如果需要，则把需要在那几秒执行返回
-     * @throws InvalidArgumentException 错误信息
-     */
-	private function parse(){
+	 *  解析crontab的定时格式，linux只支持到分钟/，这个类支持到秒
+	 * @param string $crontab_string :
+	 *
+	 *      0     1    2    3    4    5
+	 *      *     *    *    *    *    *
+	 *      -     -    -    -    -    -
+	 *      |     |    |    |    |    |
+	 *      |     |    |    |    |    +----- day of week (0 - 6) (Sunday=0)
+	 *      |     |    |    |    +----- month (1 - 12)
+	 *      |     |    |    +------- day of month (1 - 31)
+	 *      |     |    +--------- hour (0 - 23)
+	 *      |     +----------- min (0 - 59)
+	 *      +------------- sec (0-59)
+	 * @param int $start_time timestamp [default=current timestamp]
+	 * @return int unix timestamp - 下一分钟内执行是否需要执行任务，如果需要，则把需要在那几秒执行返回
+	 * @throws InvalidArgumentException 错误信息
+	 */
+	private function parse() {
 		$rule = $this->getRule();
-		if (!preg_match('/^((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)$/i',
-			trim($rule))
+		if (!preg_match(
+			'/^((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)$/i',
+			trim($rule)
+		)
 		) {
-			if (!preg_match('/^((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)$/i',
-				trim($rule))
+			if (!preg_match(
+				'/^((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)\s+((\*(\/[0-9]+)?)|[0-9\-\,\/]+)$/i',
+				trim($rule)
+			)
 			) {
-				 throw new Exception("Invalid cron string: " . $rule);
+				throw new Exception('Invalid cron string: ' . $rule);
 			}
 		}
 		$cron = preg_split("/[\s]+/i", trim($rule));
@@ -87,7 +102,7 @@ class Task {
 				'week' => $this->parseCronNumber($cron[4], 0, 6),
 			);
 		} else {
-			throw new Exception("Invalid cron string: " . $rule);
+			throw new Exception('Invalid cron string: ' . $rule);
 		}
 
 		$this->date = $date;
@@ -100,15 +115,15 @@ class Task {
 	 * @param $max
 	 * @return array
 	 */
-	protected function parseCronNumber($s, $min, $max){
+	protected function parseCronNumber($s, $min, $max) {
 		$result = array();
-		$v1 = explode(",", $s);
+		$v1 = explode(',', $s);
 		foreach ($v1 as $v2) {
-			$v3 = explode("/", $v2);
+			$v3 = explode('/', $v2);
 			$step = empty($v3[1]) ? 1 : $v3[1];
-			$v4 = explode("-", $v3[0]);
-			$_min = count($v4) == 2 ? $v4[0] : ($v3[0] == "*" ? $min : $v3[0]);
-			$_max = count($v4) == 2 ? $v4[1] : ($v3[0] == "*" ? $max : $v3[0]);
+			$v4 = explode('-', $v3[0]);
+			$_min = count($v4) == 2 ? $v4[0] : ($v3[0] == '*' ? $min : $v3[0]);
+			$_max = count($v4) == 2 ? $v4[1] : ($v3[0] == '*' ? $max : $v3[0]);
 			for ($i = $_min; $i <= $_max; $i += $step) {
 				if (intval($i) < $min) {
 					$result[$min] = $min;
