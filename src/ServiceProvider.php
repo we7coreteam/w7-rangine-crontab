@@ -54,7 +54,8 @@ class ServiceProvider extends ProviderAbstract {
 			return false;
 		}
 
-		$this->registerLogger('crontab', 'stream', [
+		$this->registerLogger('crontab', [
+			'driver' => $this->config->get('handler.log.stream'),
 			'path' => RUNTIME_PATH . '/logs/crontab.log',
 			'level' => 'debug'
 		]);
