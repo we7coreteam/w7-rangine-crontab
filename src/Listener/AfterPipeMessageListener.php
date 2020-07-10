@@ -14,7 +14,6 @@ namespace W7\Crontab\Listener;
 
 use Swoole\Coroutine;
 use Swoole\Server;
-use W7\App;
 use W7\Core\Dispatcher\TaskDispatcher;
 use W7\Core\Exception\HandlerExceptions;
 use W7\Core\Facades\Container;
@@ -38,16 +37,13 @@ class AfterPipeMessageListener extends ListenerAbstract {
 
 		//这里判断是不是crontab类型的message
 		if ($message->messageType == CrontabMessage::CRONTAB_MESSAGE) {
-			$context = App::getApp()->getContext();
-			$context->setContextDataByKey('workid', $server->worker_id);
-			$context->setContextDataByKey('coid', Coroutine::getuid());
 			/**
 			 * @var TaskDispatcher $taskDispatcher
 			 */
 			Event::dispatch(new BeforeExecutorEvent($data));
 			$taskDispatcher = Container::singleton(TaskDispatcher::class);
 			try {
-				$result = $taskDispatcher->dispatch($server, -1, $params[1], $data);
+				$result = $taskDispatcher->dispatch($server, Coroutine::getuid(), $params[1], $data);
 				if ($result === false) {
 					return false;
 				}
