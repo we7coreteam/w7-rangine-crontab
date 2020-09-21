@@ -14,11 +14,11 @@ namespace W7\Crontab\Listener;
 
 use Swoole\Coroutine;
 use Swoole\Server;
-use W7\Core\Dispatcher\TaskDispatcher;
 use W7\Core\Exception\HandlerExceptions;
 use W7\Core\Facades\Container;
 use W7\Core\Facades\Event;
 use W7\Core\Listener\ListenerAbstract;
+use W7\Core\Task\TaskDispatcher;
 use W7\Crontab\Event\AfterExecutorEvent;
 use W7\Crontab\Event\BeforeExecutorEvent;
 use W7\Crontab\Message\CrontabMessage;
@@ -43,7 +43,7 @@ class AfterPipeMessageListener extends ListenerAbstract {
 			Event::dispatch(new BeforeExecutorEvent($data));
 			$taskDispatcher = Container::singleton(TaskDispatcher::class);
 			try {
-				$result = $taskDispatcher->dispatch($server, Coroutine::getuid(), $params[1], $data);
+				$result = $taskDispatcher->dispatchNow($data, $server, Coroutine::getuid(), $params[1]);
 				if ($result === false) {
 					return false;
 				}
