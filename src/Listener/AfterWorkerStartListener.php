@@ -12,28 +12,14 @@
 
 namespace W7\Crontab\Listener;
 
-use Swoole\Server as SwooleServer;
 use W7\App;
-use W7\Core\Exception\HandlerExceptions;
-use W7\Core\Facades\Config;
 use W7\Core\Facades\Container;
-use W7\Core\Facades\Event;
 use W7\Core\Facades\Output;
 use W7\Core\Listener\ListenerAbstract;
-use W7\Crontab\Event\AfterDispatcherEvent;
-use W7\Crontab\Event\BeforeDispatcherEvent;
 use W7\Crontab\Server\Server;
-use W7\Crontab\Strategy\StrategyAbstract;
-use W7\Crontab\Strategy\WorkerStrategy;
-use W7\Crontab\Task\Task;
-use W7\Crontab\Task\TaskManager;
 
 class AfterWorkerStartListener extends ListenerAbstract {
 	public function run(...$params) {
-		/**
-		 * @var SwooleServer $server
-		 */
-		$server = $params[0];
 		$workerId = $params[1];
 
 		//如果当前进程是当前server的0号进程，执行派发任务
@@ -44,49 +30,7 @@ class AfterWorkerStartListener extends ListenerAbstract {
 				Output::info('Crontab run at ' . date('Y-m-d H:i:s'));
 			}
 
-			$taskManager = new TaskManager($this->getEnableTasks());
-
-			itimeTick(1000, function () use ($server, $taskManager) {
-				$tasks = $taskManager->getRunTasks();
-				/**
-				 * @var Task $task
-				 */
-				foreach ($tasks as $name => $task) {
-					try {
-						Event::dispatch(new BeforeDispatcherEvent($task));
-						if (!$this->getStrategy()->dispatch($server, $task->getTaskMessage())) {
-							throw new \RuntimeException('dispatch task fail, task: ' . $task->getTaskMessage()->pack());
-						}
-						Event::dispatch(new AfterDispatcherEvent($task));
-					} catch (\Throwable $throwable) {
-						Event::dispatch(new AfterDispatcherEvent($task, $throwable));
-						Container::singleton(HandlerExceptions::class)->getHandler()->report($throwable);
-					}
-				}
-			});
+			Container::get('task-scheduler')->schedule();
 		}
-	}
-
-	public function getEnableTasks() {
-		$enableTasks = [];
-		$tasks = Config::get('crontab.task', []);
-		foreach ($tasks as $name => $task) {
-			if (isset($task['enable']) && $task['enable'] === false) {
-				continue;
-			}
-			$enableTasks[$name] = $task;
-		}
-		return $enableTasks;
-	}
-
-	/**
-	 * 任务派发方式，可自定义
-	 * @return StrategyAbstract
-	 */
-	public function getStrategy() : StrategyAbstract {
-		$strategy = Config::get('crontab.setting.strategy', WorkerStrategy::class);
-		$strategy = Container::singleton($strategy, [Server::getDispatcherWorkerId()]);
-
-		return $strategy;
 	}
 }

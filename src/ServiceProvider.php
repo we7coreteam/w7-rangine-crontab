@@ -13,6 +13,8 @@
 namespace W7\Crontab;
 
 use W7\Console\Application;
+use W7\Core\Facades\Config;
+use W7\Core\Facades\Container;
 use W7\Core\Provider\ProviderAbstract;
 use W7\Core\Server\ServerEvent;
 use W7\Crontab\Event\AfterDispatcherEvent;
@@ -26,7 +28,10 @@ use W7\Crontab\Listener\BeforeExecutorListener;
 use W7\Crontab\Listener\CloseListener;
 use W7\Crontab\Listener\ConnectListener;
 use W7\Crontab\Listener\ReceiveListener;
+use W7\Crontab\Scheduler\LoopScheduler;
 use W7\Crontab\Server\Server;
+use W7\Crontab\Strategy\WorkerStrategy;
+use W7\Crontab\Task\TaskManager;
 
 class ServiceProvider extends ProviderAbstract {
 	/**
@@ -35,18 +40,54 @@ class ServiceProvider extends ProviderAbstract {
 	 * @return void
 	 */
 	public function register() {
-		$this->registerServer('crontab', Server::class);
-		$this->registerServerEvent('crontab', [
-			ServerEvent::ON_RECEIVE => ReceiveListener::class,
-			ServerEvent::ON_CONNECT => ConnectListener::class,
-			ServerEvent::ON_CLOSE => CloseListener::class
-		]);
+		$this->registerCrontabServer();
+		$this->registerScheduler();
+		$this->registerStrategy();
+		$this->registerTaskManager();
 
 		if ((ENV & DEBUG) != DEBUG) {
 			return false;
 		}
 		$this->registerLog();
 		$this->registerEvents();
+	}
+
+	private function registerCrontabServer() {
+		$this->registerServer('crontab', Server::class);
+		$this->registerServerEvent('crontab', [
+			ServerEvent::ON_RECEIVE => ReceiveListener::class,
+			ServerEvent::ON_CONNECT => ConnectListener::class,
+			ServerEvent::ON_CLOSE => CloseListener::class
+		]);
+	}
+
+	private function registerScheduler() {
+		$this->container->set('task-scheduler', function () {
+			$scheduler = $this->config->get('crontab.setting.scheduler', LoopScheduler::class);
+			return new $scheduler($this->container->get('task-manager', $this->container->get('task-strategy')));
+		});
+	}
+
+	private function registerStrategy() {
+		$this->container->set('task-strategy', function () {
+			$strategy = $this->config->get('crontab.setting.strategy', WorkerStrategy::class);
+			return new $strategy(Server::getDispatcherWorkerId());
+		});
+	}
+
+	private function registerTaskManager() {
+		$this->container->set('task-manager', function () {
+			$enableTasks = [];
+			$tasks = $this->config->get('crontab.task', []);
+			foreach ($tasks as $name => $task) {
+				if (isset($task['enable']) && $task['enable'] === false) {
+					continue;
+				}
+				$enableTasks[$name] = $task;
+			}
+
+			return new TaskManager($enableTasks);
+		});
 	}
 
 	private function registerLog() {

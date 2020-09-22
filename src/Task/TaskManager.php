@@ -31,16 +31,7 @@ class TaskManager{
 		$this->tasks[$name]->run = false;
 	}
 
-	public function getRunTasks() {
-		$time = time();
-
-		$tasks = [];
-		foreach ($this->tasks as $task) {
-			if ($task->check($time)) {
-				$tasks[$task->getName()] = $task;
-			}
-		}
-
-		return $tasks;
+	public function all() {
+		return $this->tasks;
 	}
 }
