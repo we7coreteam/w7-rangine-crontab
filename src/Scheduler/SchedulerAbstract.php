@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Rangine crontab server
+ *
+ * (c) We7Team 2019 <https://www.rangine.com>
+ *
+ * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
+ *
+ * visited https://www.rangine.com for more details
+ */
+
 namespace W7\Crontab\Scheduler;
 
 use W7\App;
@@ -22,7 +32,7 @@ abstract class SchedulerAbstract {
 	 */
 	protected $strategy;
 
-	public function  __construct(TaskManager $taskManager, StrategyAbstract $strategyAbstract) {
+	public function __construct(TaskManager $taskManager, StrategyAbstract $strategyAbstract) {
 		$this->taskManager = $taskManager;
 		$this->strategy = $strategyAbstract;
 	}
@@ -30,7 +40,7 @@ abstract class SchedulerAbstract {
 	protected function scheduleTask(Task $task) {
 		try {
 			Event::dispatch(new BeforeDispatcherEvent($task));
-			if (!$this->strategy->dispatch(App::$server, $task->getTaskMessage())) {
+			if (!$this->strategy->dispatch(App::$server->getServer(), $task->getTaskMessage())) {
 				throw new \RuntimeException('dispatch task fail, task: ' . $task->getTaskMessage()->pack());
 			}
 			Event::dispatch(new AfterDispatcherEvent($task));
