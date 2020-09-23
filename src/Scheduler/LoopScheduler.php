@@ -18,13 +18,13 @@ class LoopScheduler extends SchedulerAbstract {
 	public function schedule() {
 		itimeTick(1000, function () {
 			$time = time();
-			$tasks = $this->taskManager->all();
 
 			/**
 			 * @var Task $task
 			 */
-			foreach ($tasks as $task) {
-				if ($task->check($time)) {
+			foreach ($this->taskManager->all() as $task) {
+				//获取该任务的触发器，触发任务
+				if ($task->getTrigger()->trigger($time)) {
 					$this->scheduleTask($task);
 				}
 			}
