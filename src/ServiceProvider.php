@@ -13,8 +13,6 @@
 namespace W7\Crontab;
 
 use W7\Console\Application;
-use W7\Core\Facades\Config;
-use W7\Core\Facades\Container;
 use W7\Core\Provider\ProviderAbstract;
 use W7\Core\Server\ServerEvent;
 use W7\Crontab\Event\AfterDispatcherEvent;
@@ -64,7 +62,7 @@ class ServiceProvider extends ProviderAbstract {
 	private function registerScheduler() {
 		$this->container->set('task-scheduler', function () {
 			$scheduler = $this->config->get('crontab.setting.scheduler', LoopScheduler::class);
-			return new $scheduler($this->container->get('task-manager', $this->container->get('task-strategy')));
+			return new $scheduler($this->container->get('task-manager'), $this->container->get('task-strategy'));
 		});
 	}
 
@@ -99,7 +97,7 @@ class ServiceProvider extends ProviderAbstract {
 			'driver' => $this->config->get('handler.log.daily'),
 			'path' => RUNTIME_PATH . '/logs/crontab.log',
 			'level' => 'debug',
-			'days' => 1,
+			'days' => 1
 		]);
 	}
 
