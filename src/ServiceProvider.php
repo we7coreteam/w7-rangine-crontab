@@ -29,6 +29,7 @@ use W7\Crontab\Listener\ReceiveListener;
 use W7\Crontab\Scheduler\LoopScheduler;
 use W7\Crontab\Server\Server;
 use W7\Crontab\Strategy\WorkerStrategy;
+use W7\Crontab\Task\Task;
 use W7\Crontab\Task\TaskManager;
 
 class ServiceProvider extends ProviderAbstract {
@@ -75,16 +76,17 @@ class ServiceProvider extends ProviderAbstract {
 
 	private function registerTaskManager() {
 		$this->container->set('task-manager', function () {
-			$enableTasks = [];
-			$tasks = $this->config->get('crontab.task', []);
-			foreach ($tasks as $name => $task) {
-				if (isset($task['enable']) && $task['enable'] === false) {
+			$taskManager = new TaskManager();
+
+			$tasksConfig = $this->config->get('crontab.task', []);
+			foreach ($tasksConfig as $name => $taskConfig) {
+				if (isset($taskConfig['enable']) && $taskConfig['enable'] === false) {
 					continue;
 				}
-				$enableTasks[$name] = $task;
+				$taskManager->add(new Task($name, $taskConfig));
 			}
 
-			return new TaskManager($enableTasks);
+			return $taskManager;
 		});
 	}
 

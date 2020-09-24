@@ -24,8 +24,12 @@ class Task {
 	 */
 	protected $trigger;
 
-	public function __construct($name, $config) {
+	public function __construct($name, array $config) {
 		$this->name = $name;
+		$this->config = $config;
+	}
+
+	public function setConfig(array $config) {
 		$this->config = $config;
 	}
 
@@ -43,6 +47,10 @@ class Task {
 
 	public function getRule() {
 		return $this->config['rule'];
+	}
+
+	public function setTrigger(TriggerAbstract $trigger) {
+		$this->trigger = $trigger;
 	}
 
 	public function getTrigger() {

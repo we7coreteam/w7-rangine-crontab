@@ -1,18 +1,22 @@
 <?php
 
+/**
+ * Rangine crontab server
+ *
+ * (c) We7Team 2019 <https://www.rangine.com>
+ *
+ * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
+ *
+ * visited https://www.rangine.com for more details
+ */
+
 namespace W7\Crontab\Task;
 
-class TaskManager{
-	private $tasks = [];
+class TaskManager {
+	protected $tasks = [];
 
-	public function __construct($config) {
-		foreach ($config as $name => $task) {
-			$this->add($name, $task);
-		}
-	}
-
-	public function add($name, $config){
-		$this->tasks[$name] = new Task($name, $config);
+	public function add(Task $task) {
+		$this->tasks[$task->getName()] = $task;
 	}
 
 	public function rm($name) {
