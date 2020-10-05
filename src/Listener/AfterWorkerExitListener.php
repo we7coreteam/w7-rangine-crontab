@@ -15,7 +15,7 @@ namespace W7\Crontab\Listener;
 use Swoole\Timer;
 use W7\Core\Listener\ListenerAbstract;
 
-class WorkerExitListener extends ListenerAbstract {
+class AfterWorkerExitListener extends ListenerAbstract {
 	public function run(...$params) {
 		Timer::clearAll();
 	}

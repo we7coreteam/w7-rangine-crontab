@@ -26,7 +26,6 @@ use W7\Crontab\Listener\BeforeExecutorListener;
 use W7\Crontab\Listener\CloseListener;
 use W7\Crontab\Listener\ConnectListener;
 use W7\Crontab\Listener\ReceiveListener;
-use W7\Crontab\Listener\WorkerExitListener;
 use W7\Crontab\Scheduler\LoopScheduler;
 use W7\Crontab\Server\Server;
 use W7\Crontab\Strategy\WorkerStrategy;
@@ -58,9 +57,6 @@ class ServiceProvider extends ProviderAbstract {
 			ServerEvent::ON_RECEIVE => ReceiveListener::class,
 			ServerEvent::ON_CONNECT => ConnectListener::class,
 			ServerEvent::ON_CLOSE => CloseListener::class
-		]);
-		$this->registerServerEvent('worker', [
-			ServerEvent::ON_WORKER_EXIT => WorkerExitListener::class
 		]);
 	}
 
