@@ -31,6 +31,8 @@ class AfterWorkerStartListener extends ListenerAbstract {
 			}
 
 			Container::get('task-scheduler')->schedule();
+		} else {
+			\isetProcessTitle(App::$server->getPname() . 'crontab execute process');
 		}
 	}
 }
