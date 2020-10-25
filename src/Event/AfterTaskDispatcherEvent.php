@@ -4,7 +4,7 @@ namespace W7\Crontab\Event;
 
 use W7\Crontab\Task\Task;
 
-class AfterDispatcherEvent {
+class AfterTaskDispatcherEvent {
 	/**
 	 * @var Task $task
 	 */

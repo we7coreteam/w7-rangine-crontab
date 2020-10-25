@@ -14,18 +14,18 @@ namespace W7\Crontab\Listener;
 
 use W7\Core\Facades\Logger;
 use W7\Core\Listener\ListenerAbstract;
-use W7\Crontab\Event\BeforeExecutorEvent;
+use W7\Core\Task\Event\BeforeTaskExecutorEvent;
 
-class BeforeExecutorListener extends ListenerAbstract {
+class BeforeTaskExecutorListener extends ListenerAbstract {
 	public function run(...$params) {
 		/**
-		 * @var BeforeExecutorEvent $event
+		 * @var BeforeTaskExecutorEvent $event
 		 */
 		$event = $params[0];
 		$this->log($event);
 	}
 
-	private function log(BeforeExecutorEvent $event) {
+	private function log(BeforeTaskExecutorEvent $event) {
 		Logger::channel('crontab')->debug('exec crontab task ' . $event->taskMessage->params['name'] . ' with data ' . $event->taskMessage->pack());
 	}
 }

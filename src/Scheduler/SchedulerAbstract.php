@@ -16,8 +16,8 @@ use W7\App;
 use W7\Core\Exception\HandlerExceptions;
 use W7\Core\Facades\Container;
 use W7\Core\Facades\Event;
-use W7\Crontab\Event\AfterDispatcherEvent;
-use W7\Crontab\Event\BeforeDispatcherEvent;
+use W7\Crontab\Event\AfterTaskDispatcherEvent;
+use W7\Crontab\Event\BeforeTaskDispatcherEvent;
 use W7\Crontab\Strategy\StrategyAbstract;
 use W7\Crontab\Task\Task;
 use W7\Crontab\Task\TaskManager;
@@ -39,13 +39,13 @@ abstract class SchedulerAbstract {
 
 	protected function scheduleTask(Task $task) {
 		try {
-			Event::dispatch(new BeforeDispatcherEvent($task));
+			Event::dispatch(new BeforeTaskDispatcherEvent($task));
 			if (!$this->strategy->dispatch(App::$server->getServer(), $task->getTaskMessage())) {
 				throw new \RuntimeException('dispatch task fail, task: ' . $task->getTaskMessage()->pack());
 			}
-			Event::dispatch(new AfterDispatcherEvent($task));
+			Event::dispatch(new AfterTaskDispatcherEvent($task));
 		} catch (\Throwable $throwable) {
-			Event::dispatch(new AfterDispatcherEvent($task, $throwable));
+			Event::dispatch(new AfterTaskDispatcherEvent($task, $throwable));
 			Container::singleton(HandlerExceptions::class)->getHandler()->report($throwable);
 		}
 	}

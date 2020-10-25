@@ -15,14 +15,14 @@ namespace W7\Crontab;
 use W7\Console\Application;
 use W7\Core\Provider\ProviderAbstract;
 use W7\Core\Server\ServerEvent;
-use W7\Crontab\Event\AfterDispatcherEvent;
-use W7\Crontab\Event\AfterExecutorEvent;
-use W7\Crontab\Event\BeforeDispatcherEvent;
-use W7\Crontab\Event\BeforeExecutorEvent;
-use W7\Crontab\Listener\AfterDispatcherListener;
-use W7\Crontab\Listener\AfterExecutorListener;
-use W7\Crontab\Listener\BeforeDispatcherListener;
-use W7\Crontab\Listener\BeforeExecutorListener;
+use W7\Core\Task\Event\AfterTaskExecutorEvent;
+use W7\Core\Task\Event\BeforeTaskExecutorEvent;
+use W7\Crontab\Event\AfterTaskDispatcherEvent;
+use W7\Crontab\Event\BeforeTaskDispatcherEvent;
+use W7\Crontab\Listener\AfterTaskDispatcherListener;
+use W7\Crontab\Listener\AfterTaskExecutorListener;
+use W7\Crontab\Listener\BeforeTaskDispatcherListener;
+use W7\Crontab\Listener\BeforeTaskExecutorListener;
 use W7\Crontab\Listener\CloseListener;
 use W7\Crontab\Listener\ConnectListener;
 use W7\Crontab\Listener\ReceiveListener;
@@ -104,10 +104,10 @@ class ServiceProvider extends ProviderAbstract {
 	}
 
 	private function registerEvents() {
-		$this->registerEvent(BeforeExecutorEvent::class, BeforeExecutorListener::class);
-		$this->registerEvent(BeforeDispatcherEvent::class, BeforeDispatcherListener::class);
-		$this->registerEvent(AfterExecutorEvent::class, AfterExecutorListener::class);
-		$this->registerEvent(AfterDispatcherEvent::class, AfterDispatcherListener::class);
+		$this->registerEvent(BeforeTaskExecutorEvent::class, BeforeTaskExecutorListener::class);
+		$this->registerEvent(AfterTaskExecutorEvent::class, AfterTaskExecutorListener::class);
+		$this->registerEvent(BeforeTaskDispatcherEvent::class, BeforeTaskDispatcherListener::class);
+		$this->registerEvent(AfterTaskDispatcherEvent::class, AfterTaskDispatcherListener::class);
 	}
 
 	/**

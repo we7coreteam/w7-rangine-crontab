@@ -14,7 +14,7 @@ namespace W7\Crontab\Listener;
 
 use W7\Core\Listener\ListenerAbstract;
 
-class BeforeDispatcherListener extends ListenerAbstract {
+class BeforeTaskDispatcherListener extends ListenerAbstract {
 	public function run(...$params) {
 	}
 }
