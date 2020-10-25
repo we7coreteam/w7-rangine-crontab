@@ -2,15 +2,15 @@
 
 namespace W7\Crontab\Event;
 
-use W7\Crontab\Task\Task;
+use W7\Crontab\Task\CronTask;
 
 class BeforeTaskDispatcherEvent {
 	/**
-	 * @var Task $task
+	 * @var CronTask
 	 */
-	public $task;
+	public $cronTask;
 
-	public function __construct(Task $task) {
-		$this->task = $task;
+	public function __construct(CronTask $cronTask) {
+		$this->cronTask = $cronTask;
 	}
 }

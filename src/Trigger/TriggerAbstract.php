@@ -12,13 +12,13 @@
 
 namespace W7\Crontab\Trigger;
 
-use W7\Crontab\Task\Task;
+use W7\Crontab\Task\CronTask;
 
 abstract class TriggerAbstract {
-	protected $task;
+	protected $cronTask;
 
-	public function __construct(Task $task) {
-		$this->task = $task;
+	public function __construct(CronTask $cronTask) {
+		$this->cronTask = $cronTask;
 	}
 
 	abstract public function trigger(int $time) : bool;

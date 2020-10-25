@@ -19,33 +19,33 @@ use W7\Core\Facades\Event;
 use W7\Crontab\Event\AfterTaskDispatcherEvent;
 use W7\Crontab\Event\BeforeTaskDispatcherEvent;
 use W7\Crontab\Strategy\StrategyAbstract;
-use W7\Crontab\Task\Task;
-use W7\Crontab\Task\TaskManager;
+use W7\Crontab\Task\CronTask;
+use W7\Crontab\Task\CronTaskManager;
 
 abstract class SchedulerAbstract {
 	/**
-	 * @var TaskManager $taskManager
+	 * @var CronTaskManager
 	 */
-	protected $taskManager;
+	protected $cronTaskManager;
 	/**
 	 * @var StrategyAbstract $strategy
 	 */
 	protected $strategy;
 
-	public function __construct(TaskManager $taskManager, StrategyAbstract $strategyAbstract) {
-		$this->taskManager = $taskManager;
+	public function __construct(CronTaskManager $cronTaskManager, StrategyAbstract $strategyAbstract) {
+		$this->cronTaskManager = $cronTaskManager;
 		$this->strategy = $strategyAbstract;
 	}
 
-	protected function scheduleTask(Task $task) {
+	protected function scheduleTask(CronTask $cronTask) {
 		try {
-			Event::dispatch(new BeforeTaskDispatcherEvent($task));
-			if (!$this->strategy->dispatch(App::$server->getServer(), $task->getTaskMessage())) {
-				throw new \RuntimeException('dispatch task fail, task: ' . $task->getTaskMessage()->pack());
+			Event::dispatch(new BeforeTaskDispatcherEvent($cronTask));
+			if (!$this->strategy->dispatch(App::$server->getServer(), $cronTask->getTaskMessage())) {
+				throw new \RuntimeException('dispatch task fail, task: ' . $cronTask->getTaskMessage()->pack());
 			}
-			Event::dispatch(new AfterTaskDispatcherEvent($task));
+			Event::dispatch(new AfterTaskDispatcherEvent($cronTask));
 		} catch (\Throwable $throwable) {
-			Event::dispatch(new AfterTaskDispatcherEvent($task, $throwable));
+			Event::dispatch(new AfterTaskDispatcherEvent($cronTask, $throwable));
 			Container::singleton(HandlerExceptions::class)->getHandler()->report($throwable);
 		}
 	}

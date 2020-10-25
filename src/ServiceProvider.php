@@ -29,8 +29,8 @@ use W7\Crontab\Listener\ReceiveListener;
 use W7\Crontab\Scheduler\LoopScheduler;
 use W7\Crontab\Server\Server;
 use W7\Crontab\Strategy\WorkerStrategy;
-use W7\Crontab\Task\Task;
-use W7\Crontab\Task\TaskManager;
+use W7\Crontab\Task\CronTask;
+use W7\Crontab\Task\CronTaskManager;
 
 class ServiceProvider extends ProviderAbstract {
 	/**
@@ -61,32 +61,32 @@ class ServiceProvider extends ProviderAbstract {
 	}
 
 	private function registerScheduler() {
-		$this->container->set('task-scheduler', function () {
+		$this->container->set('cron-task-scheduler', function () {
 			$scheduler = $this->config->get('crontab.setting.scheduler', LoopScheduler::class);
-			return new $scheduler($this->container->get('task-manager'), $this->container->get('task-strategy'));
+			return new $scheduler($this->container->get('cron-task-manager'), $this->container->get('cron-task-strategy'));
 		});
 	}
 
 	private function registerStrategy() {
-		$this->container->set('task-strategy', function () {
+		$this->container->set('cron-task-strategy', function () {
 			$strategy = $this->config->get('crontab.setting.strategy', WorkerStrategy::class);
 			return new $strategy(Server::getDispatcherWorkerId());
 		});
 	}
 
 	private function registerTaskManager() {
-		$this->container->set('task-manager', function () {
-			$taskManager = new TaskManager();
+		$this->container->set('cron-task-manager', function () {
+			$cronTaskManager = new CronTaskManager();
 
 			$tasksConfig = $this->config->get('crontab.task', []);
 			foreach ($tasksConfig as $name => $taskConfig) {
 				if (isset($taskConfig['enable']) && $taskConfig['enable'] === false) {
 					continue;
 				}
-				$taskManager->add(new Task($name, $taskConfig));
+				$cronTaskManager->add(new CronTask($name, $taskConfig));
 			}
 
-			return $taskManager;
+			return $cronTaskManager;
 		});
 	}
 

@@ -14,14 +14,14 @@ namespace W7\Crontab\Trigger;
 
 use Exception;
 use InvalidArgumentException;
-use W7\Crontab\Task\Task;
+use W7\Crontab\Task\CronTask;
 
 class CronTrigger extends TriggerAbstract {
 	protected $date;
 
-	public function __construct(Task $task) {
-		parent::__construct($task);
-		$this->parse($task->getRule());
+	public function __construct(CronTask $cronTask) {
+		parent::__construct($cronTask);
+		$this->parse($cronTask->getRule());
 	}
 
 	/**

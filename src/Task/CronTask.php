@@ -16,7 +16,7 @@ use W7\Crontab\Message\CrontabMessage;
 use W7\Crontab\Trigger\CronTrigger;
 use W7\Crontab\Trigger\TriggerAbstract;
 
-class Task {
+class CronTask {
 	private $name;
 	private $config;
 	/**

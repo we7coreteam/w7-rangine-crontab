@@ -30,7 +30,7 @@ class AfterWorkerStartListener extends ListenerAbstract {
 				Output::info('Crontab run at ' . date('Y-m-d H:i:s'));
 			}
 
-			Container::get('task-scheduler')->schedule();
+			Container::get('cron-task-scheduler')->schedule();
 		} else {
 			\isetProcessTitle(App::$server->getPname() . 'crontab execute process');
 		}

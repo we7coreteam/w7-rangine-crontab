@@ -21,6 +21,4 @@ class CrontabMessage extends TaskMessage {
 	const CRONTAB_MESSAGE = 'crontab';
 
 	public $messageType = self::CRONTAB_MESSAGE;
-
-	public $name = '';
 }

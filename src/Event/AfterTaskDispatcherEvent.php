@@ -2,22 +2,22 @@
 
 namespace W7\Crontab\Event;
 
-use W7\Crontab\Task\Task;
+use W7\Crontab\Task\CronTask;
 
 class AfterTaskDispatcherEvent {
 	/**
-	 * @var Task $task
+	 * @var CronTask
 	 */
-	public $task;
+	public $cronTask;
 
 	/**
-	 * @var \Throwable $throwable
+	 * @var \Throwable
 	 */
 	public $throwable;
 
 
-	public function __construct(Task $task, \Throwable $throwable = null) {
-		$this->task = $task;
+	public function __construct(CronTask $cronTask, \Throwable $throwable = null) {
+		$this->cronTask = $cronTask;
 		$this->throwable = $throwable;
 	}
 }

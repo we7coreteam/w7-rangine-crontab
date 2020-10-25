@@ -27,9 +27,9 @@ class AfterTaskDispatcherListener extends ListenerAbstract {
 
 	private function log(AfterTaskDispatcherEvent $event) {
 		if (!$event->throwable) {
-			Logger::channel('crontab')->debug('push crontab task ' . $event->task->getName() . ' success with data ' . $event->task->getTaskMessage()->pack());
+			Logger::channel('crontab')->debug('push crontab task ' . $event->cronTask->getName() . ' success with data ' . $event->cronTask->getTaskMessage()->pack());
 		} else {
-			Logger::channel('crontab')->debug('push crontab task ' . $event->task->getName() . ' fail with data ' . $event->task->getTaskMessage()->pack() . ' with error ' . $event->throwable->getMessage());
+			Logger::channel('crontab')->debug('push crontab task ' . $event->cronTask->getName() . ' fail with data ' . $event->cronTask->getTaskMessage()->pack() . ' with error ' . $event->throwable->getMessage());
 		}
 	}
 }
