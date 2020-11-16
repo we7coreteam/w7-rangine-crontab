@@ -10,16 +10,23 @@
  * visited https://www.rangine.com for more details
  */
 
-namespace W7\Crontab\Trigger;
+namespace W7\Crontab\Event;
 
 use W7\Crontab\Task\CronTask;
 
-abstract class TriggerAbstract {
-	protected $cronTask;
+class AfterTaskDispatcherEvent {
+	/**
+	 * @var CronTask
+	 */
+	public $cronTask;
 
-	public function __construct(CronTask $cronTask) {
+	/**
+	 * @var \Throwable
+	 */
+	public $throwable;
+
+	public function __construct(CronTask $cronTask, \Throwable $throwable = null) {
 		$this->cronTask = $cronTask;
+		$this->throwable = $throwable;
 	}
-
-	abstract public function trigger(int $time) : bool;
 }

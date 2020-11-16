@@ -12,30 +12,30 @@
 
 namespace W7\Crontab\Task;
 
-class TaskManager {
-	protected $tasks = [];
+class CronTaskManager {
+	protected $cronTasks = [];
 
-	public function add(Task $task) {
-		$this->tasks[$task->getName()] = $task;
+	public function add(CronTask $task) {
+		$this->cronTasks[$task->getName()] = $task;
 	}
 
 	public function rm($name) {
-		unset($this->tasks[$name]);
+		unset($this->cronTasks[$name]);
 	}
 
 	public function count() {
-		return count($this->tasks);
+		return count($this->cronTasks);
 	}
 
 	public function runTask($name) {
-		$this->tasks[$name]->run = true;
+		$this->cronTasks[$name]->run = true;
 	}
 
 	public function finishTask($name) {
-		$this->tasks[$name]->run = false;
+		$this->cronTasks[$name]->run = false;
 	}
 
 	public function all() {
-		return $this->tasks;
+		return $this->cronTasks;
 	}
 }

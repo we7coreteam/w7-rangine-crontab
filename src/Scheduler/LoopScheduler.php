@@ -12,7 +12,7 @@
 
 namespace W7\Crontab\Scheduler;
 
-use W7\Crontab\Task\Task;
+use W7\Crontab\Task\CronTask;
 
 class LoopScheduler extends SchedulerAbstract {
 	public function schedule() {
@@ -20,12 +20,12 @@ class LoopScheduler extends SchedulerAbstract {
 			$time = time();
 
 			/**
-			 * @var Task $task
+			 * @var CronTask $cronTask
 			 */
-			foreach ($this->taskManager->all() as $task) {
+			foreach ($this->cronTaskManager->all() as $cronTask) {
 				//获取该任务的触发器，触发任务
-				if ($task->getTrigger()->trigger($time)) {
-					$this->scheduleTask($task);
+				if ($cronTask->getTrigger()->trigger($time)) {
+					$this->scheduleTask($cronTask);
 				}
 			}
 		});

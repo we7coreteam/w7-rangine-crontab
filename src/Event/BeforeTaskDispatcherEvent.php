@@ -10,11 +10,17 @@
  * visited https://www.rangine.com for more details
  */
 
-namespace W7\Crontab\Listener;
+namespace W7\Crontab\Event;
 
-use W7\Core\Listener\ListenerAbstract;
+use W7\Crontab\Task\CronTask;
 
-class BeforeDispatcherListener extends ListenerAbstract {
-	public function run(...$params) {
+class BeforeTaskDispatcherEvent {
+	/**
+	 * @var CronTask
+	 */
+	public $cronTask;
+
+	public function __construct(CronTask $cronTask) {
+		$this->cronTask = $cronTask;
 	}
 }

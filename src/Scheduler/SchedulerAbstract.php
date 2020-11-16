@@ -14,29 +14,22 @@ namespace W7\Crontab\Scheduler;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use W7\App;
-use W7\Crontab\Event\AfterDispatcherEvent;
-use W7\Crontab\Event\BeforeDispatcherEvent;
 use W7\Crontab\Strategy\StrategyAbstract;
-use W7\Crontab\Task\Task;
-use W7\Crontab\Task\TaskManager;
+use W7\Crontab\Task\CronTask;
+use W7\Crontab\Task\CronTaskManager;
 
 abstract class SchedulerAbstract {
 	/**
-	 * @var TaskManager $taskManager
+	 * @var CronTaskManager
 	 */
-	protected $taskManager;
+	protected $cronTaskManager;
 	/**
 	 * @var StrategyAbstract $strategy
 	 */
 	protected $strategy;
 
-	/**
-	 * @var EventDispatcherInterface
-	 */
-	protected $eventDispatcher;
-
-	public function __construct(TaskManager $taskManager, StrategyAbstract $strategyAbstract) {
-		$this->taskManager = $taskManager;
+	public function __construct(CronTaskManager $cronTaskManager, StrategyAbstract $strategyAbstract) {
+		$this->cronTaskManager = $cronTaskManager;
 		$this->strategy = $strategyAbstract;
 	}
 
@@ -44,7 +37,7 @@ abstract class SchedulerAbstract {
 		$this->eventDispatcher = $eventDispatcher;
 	}
 
-	protected function scheduleTask(Task $task) {
+	protected function scheduleTask(CronTask $task) {
 		try {
 			$this->eventDispatcher && $this->eventDispatcher->dispatch(new BeforeDispatcherEvent($task));
 			if (!$this->strategy->dispatch(App::$server->getServer(), $task->getTaskMessage())) {
