@@ -13,8 +13,7 @@
 namespace W7\Crontab\Listener;
 
 use W7\App;
-use W7\Core\Facades\Container;
-use W7\Core\Facades\Output;
+use W7\Console\Io\Output;
 use W7\Core\Listener\ListenerAbstract;
 use W7\Crontab\Server\Server;
 
@@ -27,10 +26,10 @@ class AfterWorkerStartListener extends ListenerAbstract {
 			\isetProcessTitle(App::$server->getPname() . 'crontab dispatcher process');
 
 			if ((ENV & DEBUG) === DEBUG) {
-				Output::info('Crontab run at ' . date('Y-m-d H:i:s'));
+				$this->getContainer()->singleton(Output::class)->info('Crontab run at ' . date('Y-m-d H:i:s'));
 			}
 
-			Container::get('task-scheduler')->schedule();
+			$this->getContainer()->get('task-scheduler')->schedule();
 		} else {
 			\isetProcessTitle(App::$server->getPname() . 'crontab execute process');
 		}

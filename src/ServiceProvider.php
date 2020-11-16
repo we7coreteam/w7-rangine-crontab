@@ -27,6 +27,7 @@ use W7\Crontab\Listener\CloseListener;
 use W7\Crontab\Listener\ConnectListener;
 use W7\Crontab\Listener\ReceiveListener;
 use W7\Crontab\Scheduler\LoopScheduler;
+use W7\Crontab\Scheduler\SchedulerAbstract;
 use W7\Crontab\Server\Server;
 use W7\Crontab\Strategy\WorkerStrategy;
 use W7\Crontab\Task\Task;
@@ -62,8 +63,14 @@ class ServiceProvider extends ProviderAbstract {
 
 	private function registerScheduler() {
 		$this->container->set('task-scheduler', function () {
+			/**
+			 * @var SchedulerAbstract $scheduler
+			 */
 			$scheduler = $this->config->get('crontab.setting.scheduler', LoopScheduler::class);
-			return new $scheduler($this->container->get('task-manager'), $this->container->get('task-strategy'));
+			$scheduler = new $scheduler($this->container->get('task-manager'), $this->container->get('task-strategy'));
+			$scheduler->setEventDispatcher($this->getEventDispatcher());
+
+			return $scheduler;
 		});
 	}
 
@@ -104,10 +111,10 @@ class ServiceProvider extends ProviderAbstract {
 	}
 
 	private function registerEvents() {
-		$this->registerEvent(BeforeExecutorEvent::class, BeforeExecutorListener::class);
-		$this->registerEvent(BeforeDispatcherEvent::class, BeforeDispatcherListener::class);
-		$this->registerEvent(AfterExecutorEvent::class, AfterExecutorListener::class);
-		$this->registerEvent(AfterDispatcherEvent::class, AfterDispatcherListener::class);
+		$this->getEventDispatcher()->listen(BeforeExecutorEvent::class, BeforeExecutorListener::class);
+		$this->getEventDispatcher()->listen(BeforeDispatcherEvent::class, BeforeDispatcherListener::class);
+		$this->getEventDispatcher()->listen(AfterExecutorEvent::class, AfterExecutorListener::class);
+		$this->getEventDispatcher()->listen(AfterDispatcherEvent::class, AfterDispatcherListener::class);
 	}
 
 	/**

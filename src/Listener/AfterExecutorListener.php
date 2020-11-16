@@ -12,7 +12,6 @@
 
 namespace W7\Crontab\Listener;
 
-use W7\Core\Facades\Logger;
 use W7\Core\Listener\ListenerAbstract;
 use W7\Crontab\Event\AfterExecutorEvent;
 
@@ -27,9 +26,9 @@ class AfterExecutorListener extends ListenerAbstract {
 
 	public function log(AfterExecutorEvent $event) {
 		if (!$event->throwable) {
-			Logger::channel('crontab')->debug('exec crontab task ' . $event->taskMessage->params['name'] . ' success with data ' . $event->taskMessage->pack());
+			$this->getLogger()->channel('crontab')->debug('exec crontab task ' . $event->taskMessage->params['name'] . ' success with data ' . $event->taskMessage->pack());
 		} else {
-			Logger::channel('crontab')->debug('exec crontab task ' . $event->taskMessage->params['name'] . ' fail with data ' . $event->taskMessage->pack() . ' with error ' . $event->throwable->getMessage());
+			$this->getLogger()->channel('crontab')->debug('exec crontab task ' . $event->taskMessage->params['name'] . ' fail with data ' . $event->taskMessage->pack() . ' with error ' . $event->throwable->getMessage());
 		}
 	}
 }

@@ -13,10 +13,8 @@
 namespace W7\Crontab\Listener;
 
 use Swoole\Server;
+use W7\Contract\Task\TaskDispatcherInterface;
 use W7\Core\Exception\HandlerExceptions;
-use W7\Core\Facades\Container;
-use W7\Core\Facades\Context;
-use W7\Core\Facades\Event;
 use W7\Core\Listener\ListenerAbstract;
 use W7\Core\Task\TaskDispatcher;
 use W7\Crontab\Event\AfterExecutorEvent;
@@ -40,17 +38,17 @@ class AfterPipeMessageListener extends ListenerAbstract {
 			/**
 			 * @var TaskDispatcher $taskDispatcher
 			 */
-			Event::dispatch(new BeforeExecutorEvent($data));
-			$taskDispatcher = Container::singleton(TaskDispatcher::class);
+			$this->getEventDispatcher()->dispatch(new BeforeExecutorEvent($data));
+			$taskDispatcher = $this->getContainer()->singleton(TaskDispatcherInterface::class);
 			try {
-				$result = $taskDispatcher->dispatchNow($data, $server, Context::getCoroutineId(), $params[1]);
+				$result = $taskDispatcher->dispatchNow($data, $server, $this->getContext()->getCoroutineId(), $params[1]);
 				if ($result === false) {
 					return false;
 				}
-				Event::dispatch(new AfterExecutorEvent($data));
+				$this->getEventDispatcher()->dispatch(new AfterExecutorEvent($data));
 			} catch (\Throwable $throwable) {
-				Event::dispatch(new AfterExecutorEvent($data, $throwable));
-				Container::singleton(HandlerExceptions::class)->getHandler()->report($throwable);
+				$this->getEventDispatcher()->dispatch(new AfterExecutorEvent($data, $throwable));
+				$this->getContainer()->singleton(HandlerExceptions::class)->getHandler()->report($throwable);
 			}
 		}
 	}

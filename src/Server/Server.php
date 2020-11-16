@@ -13,7 +13,6 @@
 namespace W7\Crontab\Server;
 
 use W7\App;
-use W7\Core\Facades\Config;
 use W7\Tcp\Server\Server as TcpServer;
 
 class Server extends TcpServer {
@@ -22,10 +21,10 @@ class Server extends TcpServer {
 	public static $aloneServer = true;
 
 	public function __construct() {
-		if (!$setting = Config::get($this->getType() . '.setting')) {
+		if (!$setting = $this->getConfig()->get($this->getType() . '.setting')) {
 			throw new \RuntimeException(sprintf('缺少服务配置 %s,请在config/crontab.php中添加setting配置项', $this->getType()));
 		}
-		Config::set('server.' . $this->getType(), $setting);
+		$this->getConfig()->set('server.' . $this->getType(), $setting);
 		parent::__construct();
 	}
 
@@ -36,7 +35,7 @@ class Server extends TcpServer {
 	protected function checkSetting() {
 		parent::checkSetting();
 
-		$tasks = Config::get('crontab.task', []);
+		$tasks = $this->getConfig()->get('crontab.task', []);
 		foreach ($tasks as $name => $task) {
 			if (empty($task['class'])) {
 				throw new \RuntimeException('task ' . $name . ' config error : class, please check the configuration in config/crontab.php');
