@@ -67,7 +67,7 @@ class ServiceProvider extends ProviderAbstract {
 			 * @var SchedulerAbstract $scheduler
 			 */
 			$scheduler = $this->config->get('crontab.setting.scheduler', LoopScheduler::class);
-			$scheduler = new $scheduler($this->container->get('task-manager'), $this->container->get('task-strategy'));
+			$scheduler = new $scheduler($this->container->singleton('cron-task-manager'), $this->container->singleton('cron-task-strategy'));
 			$scheduler->setEventDispatcher($this->getEventDispatcher());
 
 			return $scheduler;
@@ -111,10 +111,10 @@ class ServiceProvider extends ProviderAbstract {
 	}
 
 	private function registerEvents() {
-		$this->registerEvent(BeforeTaskExecutorEvent::class, BeforeTaskExecutorListener::class);
-		$this->registerEvent(AfterTaskExecutorEvent::class, AfterTaskExecutorListener::class);
-		$this->registerEvent(BeforeTaskDispatcherEvent::class, BeforeTaskDispatcherListener::class);
-		$this->registerEvent(AfterTaskDispatcherEvent::class, AfterTaskDispatcherListener::class);
+		$this->getEventDispatcher()->listen(BeforeTaskExecutorEvent::class, BeforeTaskExecutorListener::class);
+		$this->getEventDispatcher()->listen(AfterTaskExecutorEvent::class, AfterTaskExecutorListener::class);
+		$this->getEventDispatcher()->listen(BeforeTaskDispatcherEvent::class, BeforeTaskDispatcherListener::class);
+		$this->getEventDispatcher()->listen(AfterTaskDispatcherEvent::class, AfterTaskDispatcherListener::class);
 	}
 
 	/**

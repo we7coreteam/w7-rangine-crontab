@@ -29,7 +29,7 @@ class AfterWorkerStartListener extends ListenerAbstract {
 				$this->getContainer()->singleton(Output::class)->info('Crontab run at ' . date('Y-m-d H:i:s'));
 			}
 
-			$this->getContainer()->get('task-scheduler')->schedule();
+			$this->getContainer()->singleton('cron-task-scheduler')->schedule();
 		} else {
 			\isetProcessTitle(App::$server->getPname() . 'crontab execute process');
 		}

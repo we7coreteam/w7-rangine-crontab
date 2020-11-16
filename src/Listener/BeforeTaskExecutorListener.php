@@ -24,7 +24,7 @@ class BeforeTaskExecutorListener extends ListenerAbstract {
 		$this->log($event);
 	}
 
-	private function log(BeforeExecutorEvent $event) {
+	private function log(BeforeTaskExecutorEvent $event) {
 		$this->getLogger()->channel('crontab')->debug('exec crontab task ' . $event->taskMessage->params['name'] . ' with data ' . $event->taskMessage->pack());
 	}
 }

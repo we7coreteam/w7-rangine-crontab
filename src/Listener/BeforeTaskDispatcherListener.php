@@ -12,7 +12,6 @@
 
 namespace W7\Crontab\Listener;
 
-use W7\Core\Facades\Logger;
 use W7\Core\Listener\ListenerAbstract;
 use W7\Crontab\Event\BeforeTaskDispatcherEvent;
 
@@ -26,6 +25,6 @@ class BeforeTaskDispatcherListener extends ListenerAbstract {
 	}
 
 	private function log(BeforeTaskDispatcherEvent $event) {
-		Logger::channel('crontab')->debug('prepare push crontab task ' . $event->cronTask->getName() . ' with data ' . $event->cronTask->getTaskMessage()->pack());
+		$this->getLogger()->channel('crontab')->debug('prepare push crontab task ' . $event->cronTask->getName() . ' with data ' . $event->cronTask->getTaskMessage()->pack());
 	}
 }
