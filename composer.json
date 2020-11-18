@@ -13,7 +13,7 @@
 		"dragonmantank/cron-expression": "^2.2"
 	},
 	"require-dev": {
-		"w7/php-cs-fixer": "^1.0",
+		"w7/php-cs-fixer": "*",
 		"phpunit/phpunit": "^8.0"
 	},
 	"autoload": {
