@@ -9,8 +9,7 @@
 	"license": "Apache-2.0",
 	"require": {
 		"php": ">=7.1.0",
-		"w7/rangine": "*",
-		"dragonmantank/cron-expression": "^2.2"
+		"w7/rangine": "*"
 	},
 	"require-dev": {
 		"w7/php-cs-fixer": "*",
