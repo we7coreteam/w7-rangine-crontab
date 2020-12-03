@@ -12,15 +12,12 @@
 
 namespace W7\Crontab\Event;
 
-use W7\Crontab\Task\CronTask;
+use W7\Core\Task\Event\BeforeTaskExecutorEvent;
+use W7\Crontab\Message\CrontabMessage;
 
-class BeforeTaskDispatcherEvent {
+class BeforeCronTaskExecutorEvent extends BeforeTaskExecutorEvent {
 	/**
-	 * @var CronTask
+	 * @var CrontabMessage
 	 */
-	public $cronTask;
-
-	public function __construct(CronTask $cronTask) {
-		$this->cronTask = $cronTask;
-	}
+	public $taskMessage;
 }

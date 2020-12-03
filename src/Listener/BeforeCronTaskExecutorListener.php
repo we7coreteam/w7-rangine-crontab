@@ -13,18 +13,18 @@
 namespace W7\Crontab\Listener;
 
 use W7\Core\Listener\ListenerAbstract;
-use W7\Core\Task\Event\BeforeTaskExecutorEvent;
+use W7\Crontab\Event\BeforeCronTaskExecutorEvent;
 
-class BeforeTaskExecutorListener extends ListenerAbstract {
+class BeforeCronTaskExecutorListener extends ListenerAbstract {
 	public function run(...$params) {
 		/**
-		 * @var BeforeTaskExecutorEvent $event
+		 * @var BeforeCronTaskExecutorEvent $event
 		 */
 		$event = $params[0];
 		$this->log($event);
 	}
 
-	private function log(BeforeTaskExecutorEvent $event) {
+	private function log(BeforeCronTaskExecutorEvent $event) {
 		$this->getLogger()->channel('crontab')->debug('exec crontab task ' . $event->taskMessage->params['name'] . ' with data ' . $event->taskMessage->pack());
 	}
 }

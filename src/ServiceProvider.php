@@ -15,14 +15,14 @@ namespace W7\Crontab;
 use W7\Console\Application;
 use W7\Core\Provider\ProviderAbstract;
 use W7\Core\Server\ServerEvent;
-use W7\Core\Task\Event\AfterTaskExecutorEvent;
-use W7\Core\Task\Event\BeforeTaskExecutorEvent;
-use W7\Crontab\Event\AfterTaskDispatcherEvent;
-use W7\Crontab\Event\BeforeTaskDispatcherEvent;
-use W7\Crontab\Listener\AfterTaskDispatcherListener;
-use W7\Crontab\Listener\AfterTaskExecutorListener;
-use W7\Crontab\Listener\BeforeTaskDispatcherListener;
-use W7\Crontab\Listener\BeforeTaskExecutorListener;
+use W7\Crontab\Event\AfterCronTaskExecutorEvent;
+use W7\Crontab\Event\BeforeCronTaskExecutorEvent;
+use W7\Crontab\Event\AfterCronTaskDispatchEvent;
+use W7\Crontab\Event\BeforeCronTaskDispatchEvent;
+use W7\Crontab\Listener\AfterCronTaskDispatchListener;
+use W7\Crontab\Listener\AfterCronTaskExecutorListener;
+use W7\Crontab\Listener\BeforeCronTaskDispatchListener;
+use W7\Crontab\Listener\BeforeCronTaskExecutorListener;
 use W7\Crontab\Listener\CloseListener;
 use W7\Crontab\Listener\ConnectListener;
 use W7\Crontab\Listener\ReceiveListener;
@@ -111,10 +111,10 @@ class ServiceProvider extends ProviderAbstract {
 	}
 
 	private function registerEvents() {
-		$this->getEventDispatcher()->listen(BeforeTaskExecutorEvent::class, BeforeTaskExecutorListener::class);
-		$this->getEventDispatcher()->listen(AfterTaskExecutorEvent::class, AfterTaskExecutorListener::class);
-		$this->getEventDispatcher()->listen(BeforeTaskDispatcherEvent::class, BeforeTaskDispatcherListener::class);
-		$this->getEventDispatcher()->listen(AfterTaskDispatcherEvent::class, AfterTaskDispatcherListener::class);
+		$this->getEventDispatcher()->listen(BeforeCronTaskExecutorEvent::class, BeforeCronTaskExecutorListener::class);
+		$this->getEventDispatcher()->listen(AfterCronTaskExecutorEvent::class, AfterCronTaskExecutorListener::class);
+		$this->getEventDispatcher()->listen(BeforeCronTaskDispatchEvent::class, BeforeCronTaskDispatchListener::class);
+		$this->getEventDispatcher()->listen(AfterCronTaskDispatchEvent::class, AfterCronTaskDispatchListener::class);
 	}
 
 	/**

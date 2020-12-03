@@ -14,7 +14,7 @@ namespace W7\Crontab\Event;
 
 use W7\Crontab\Task\CronTask;
 
-class AfterTaskDispatcherEvent {
+class AfterCronTaskDispatchEvent {
 	/**
 	 * @var CronTask
 	 */

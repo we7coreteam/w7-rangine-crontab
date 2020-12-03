@@ -13,18 +13,18 @@
 namespace W7\Crontab\Listener;
 
 use W7\Core\Listener\ListenerAbstract;
-use W7\Crontab\Event\AfterTaskDispatcherEvent;
+use W7\Crontab\Event\AfterCronTaskDispatchEvent;
 
-class AfterTaskDispatcherListener extends ListenerAbstract {
+class AfterCronTaskDispatchListener extends ListenerAbstract {
 	public function run(...$params) {
 		/**
-		 * @var AfterTaskDispatcherEvent $event
+		 * @var AfterCronTaskDispatchEvent $event
 		 */
 		$event = $params[0];
 		$this->log($event);
 	}
 
-	private function log(AfterTaskDispatcherEvent $event) {
+	private function log(AfterCronTaskDispatchEvent $event) {
 		if (!$event->throwable) {
 			$this->getLogger()->channel('crontab')->debug('push crontab task ' . $event->cronTask->getName() . ' success with data ' . $event->cronTask->getTaskMessage()->pack());
 		} else {
