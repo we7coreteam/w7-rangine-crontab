@@ -13,7 +13,6 @@
 namespace W7\Crontab\Listener;
 
 use Swoole\Http\Server;
-use W7\Core\Helper\Traiter\TaskDispatchTrait;
 use W7\Core\Listener\ListenerAbstract;
 use W7\Contract\Task\TaskDispatcherInterface;
 use W7\Core\Exception\HandlerExceptions;
@@ -23,8 +22,6 @@ use W7\Crontab\Event\BeforeCronTaskExecutorEvent;
 use W7\Crontab\Message\CrontabMessage;
 
 class AfterPipeMessageListener extends ListenerAbstract {
-	use TaskDispatchTrait;
-
 	public function run(...$params) {
 		/**
 		 * @var Server $server
