@@ -13,15 +13,16 @@
 namespace W7\Crontab\Listener;
 
 use Swoole\Http\Server;
+use W7\Core\Helper\Traiter\TaskDispatchTrait;
 use W7\Core\Listener\ListenerAbstract;
-use W7\Contract\Task\TaskDispatcherInterface;
 use W7\Core\Exception\HandlerExceptions;
-use W7\Core\Message\TaskMessage;
 use W7\Crontab\Event\AfterCronTaskExecutorEvent;
 use W7\Crontab\Event\BeforeCronTaskExecutorEvent;
 use W7\Crontab\Message\CrontabMessage;
 
 class AfterPipeMessageListener extends ListenerAbstract {
+	use TaskDispatchTrait;
+
 	public function run(...$params) {
 		/**
 		 * @var Server $server
@@ -32,12 +33,7 @@ class AfterPipeMessageListener extends ListenerAbstract {
 			try {
 				$this->getEventDispatcher()->dispatch(new BeforeCronTaskExecutorEvent($message));
 
-				/**
-				 * @var TaskDispatcherInterface $taskDispatcher
-				 */
-				$taskDispatcher = $this->getContainer()->singleton(TaskDispatcherInterface::class);
-				$message->type = TaskMessage::OPERATION_TASK_NOW;
-				$message = $taskDispatcher->dispatch($message, $server, $this->getContext()->getCoroutineId(), $workId);
+				$message = $this->dispatchNow($message, $server, $workId, $this->getContext()->getCoroutineId());
 
 				$this->getEventDispatcher()->dispatch(new AfterCronTaskExecutorEvent($message));
 			} catch (\Throwable $throwable) {
