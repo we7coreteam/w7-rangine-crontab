@@ -17,6 +17,7 @@ use W7\Tcp\Server\Server as TcpServer;
 
 class Server extends TcpServer {
 	private static $dispatcherWorkerId;
+	private static $maxExecuteWorkerId;
 
 	public static $aloneServer = true;
 
@@ -48,6 +49,7 @@ class Server extends TcpServer {
 		//派发任务的进程加用户配置的执行任务进程数量
 		$this->setting['worker_num'] += 1;
 		self::$dispatcherWorkerId = 0;
+		self::$maxExecuteWorkerId = $this->setting['worker_num'] - 1;
 	}
 
 	public function listener(\Swoole\Server $server) {
@@ -65,11 +67,16 @@ class Server extends TcpServer {
 
 		self::$dispatcherWorkerId = App::$server->setting['worker_num'];
 		App::$server->setting['worker_num'] += $this->setting['worker_num'];
+		self::$maxExecuteWorkerId = App::$server->setting['worker_num'] - 1;
 
 		$this->registerService();
 	}
 
 	public static function getDispatcherWorkerId() {
 		return self::$dispatcherWorkerId;
+	}
+
+	public static function getMaxExecuteWorkerId() {
+		return self::$maxExecuteWorkerId;
 	}
 }

@@ -30,7 +30,7 @@ class AfterWorkerStartListener extends ListenerAbstract {
 			}
 
 			$this->getContainer()->singleton('cron-task-scheduler')->schedule();
-		} else {
+		} elseif ($workerId > Server::getDispatcherWorkerId() && $workerId <= Server::getMaxExecuteWorkerId()) {
 			\isetProcessTitle(App::$server->getPname() . 'crontab execute process');
 		}
 	}

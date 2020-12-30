@@ -13,6 +13,7 @@
 namespace W7\Crontab\Strategy;
 
 use Swoole\Server;
+use W7\Crontab\Server\Server as CrontabServer;
 use W7\Crontab\Message\CrontabMessage;
 
 class WorkerStrategy extends StrategyAbstract {
@@ -21,25 +22,22 @@ class WorkerStrategy extends StrategyAbstract {
 	 */
 	protected $currentWorkerId;
 
-	public function __construct($minWorkerId) {
-		parent::__construct($minWorkerId);
-		$this->currentWorkerId = $this->minWorkerId;
+	public function __construct() {
+		$this->currentWorkerId = CrontabServer::getDispatcherWorkerId();
 	}
 
 	public function dispatch(Server $server, CrontabMessage $crontabMessage): bool {
-		return $server->sendMessage($crontabMessage->pack(), $this->getNextWorkerId($server));
+		return $server->sendMessage($crontabMessage->pack(), $this->getNextWorkerId());
 	}
 
 	/**
 	 * 获取当前任务的派发进程号，如果大于服务进程号，转发到第一个进程
-	 * @param Server $server
 	 * @return int
 	 */
-	protected function getNextWorkerId(Server $server): int {
+	protected function getNextWorkerId(): int {
 		++$this->currentWorkerId;
-		$maxWorkerId = $server->setting['worker_num'] - 1;
-		if ($this->currentWorkerId > $maxWorkerId) {
-			$this->currentWorkerId = $this->minWorkerId + 1;
+		if ($this->currentWorkerId > CrontabServer::getMaxExecuteWorkerId()) {
+			$this->currentWorkerId = CrontabServer::getDispatcherWorkerId() + 1;
 		}
 		return $this->currentWorkerId;
 	}

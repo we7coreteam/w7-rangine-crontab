@@ -16,11 +16,5 @@ use Swoole\Server;
 use W7\Crontab\Message\CrontabMessage;
 
 abstract class StrategyAbstract {
-	protected $minWorkerId;
-
-	public function __construct($minWorkerId) {
-		$this->minWorkerId = $minWorkerId;
-	}
-
 	abstract public function dispatch(Server $server, CrontabMessage $crontabMessage) : bool;
 }
