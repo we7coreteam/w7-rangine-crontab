@@ -12,6 +12,7 @@
 
 namespace W7\Crontab;
 
+use W7\App;
 use W7\Console\Application;
 use W7\Core\Provider\ProviderAbstract;
 use W7\Core\Server\ServerEvent;
@@ -104,7 +105,7 @@ class ServiceProvider extends ProviderAbstract {
 
 		$this->registerLogger('crontab', [
 			'driver' => $this->config->get('handler.log.daily'),
-			'path' => RUNTIME_PATH . '/logs/crontab.log',
+			'path' => App::getApp()->getRuntimePath() . '/logs/crontab.log',
 			'level' => 'debug',
 			'days' => 1
 		]);
