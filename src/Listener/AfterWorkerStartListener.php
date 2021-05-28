@@ -26,10 +26,10 @@ class AfterWorkerStartListener extends ListenerAbstract {
 			\isetProcessTitle(App::$server->getPname() . 'crontab dispatcher process');
 
 			if ((ENV & DEBUG) === DEBUG) {
-				$this->getContainer()->singleton(Output::class)->info('Crontab run at ' . date('Y-m-d H:i:s'));
+				$this->getContainer()->get(Output::class)->info('Crontab run at ' . date('Y-m-d H:i:s'));
 			}
 
-			$this->getContainer()->singleton('cron-task-scheduler')->schedule();
+			$this->getContainer()->get('cron-task-scheduler')->schedule();
 		} elseif ($workerId > Server::getDispatcherWorkerId() && $workerId <= Server::getMaxExecuteWorkerId()) {
 			\isetProcessTitle(App::$server->getPname() . 'crontab execute process');
 		}
