@@ -68,7 +68,7 @@ class ServiceProvider extends ProviderAbstract {
 			 * @var SchedulerAbstract $scheduler
 			 */
 			$scheduler = $this->config->get('crontab.setting.scheduler', LoopScheduler::class);
-			$scheduler = new $scheduler($this->container->singleton('cron-task-manager'), $this->container->singleton('cron-task-strategy'));
+			$scheduler = new $scheduler($this->container->get('cron-task-manager'), $this->container->get('cron-task-strategy'));
 			$scheduler->setEventDispatcher($this->getEventDispatcher());
 
 			return $scheduler;

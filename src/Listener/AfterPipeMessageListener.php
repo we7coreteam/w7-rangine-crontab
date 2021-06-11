@@ -39,7 +39,7 @@ class AfterPipeMessageListener extends ListenerAbstract {
 			} catch (\Throwable $throwable) {
 				$message->result = $throwable->getMessage();
 				$this->getEventDispatcher()->dispatch(new AfterCronTaskExecutorEvent($message, $throwable));
-				$this->getContainer()->singleton(HandlerExceptions::class)->getHandler()->report($throwable);
+				$this->getContainer()->get(HandlerExceptions::class)->getHandler()->report($throwable);
 			}
 		}
 	}
